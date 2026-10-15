@@ -2,21 +2,27 @@
 
 - 원본/근거: 사용자 요청 및 저장소 직접 확인
 - 확인일: 2026-10-15 (한국 시간, 외부 원본은 접근 시도일)
-- 문서 상태: 현재 저장소 확인 완료 / 목표 아키텍처 미결정
-
-## 확인 근거
-
-기준 커밋은 `ab8756e` (`Initial Commit`)입니다. 아래는 코드와 프로젝트 설정에서 확인한 사실이며 외부 기획·디자인 원본을 반영한 목표 구조가 아닙니다.
+- 문서 상태: 책장 홈 구조 작성 / Mac 빌드 검증 필요
 
 ## 확인된 현재 구현
 
-- [FOLINAApp.swift](../../FOLINA/FOLINAApp.swift): SwiftUI 앱 시작 지점. `WindowGroup`에서 `ContentView`를 표시합니다.
-- [ContentView.swift](../../FOLINA/ContentView.swift): 지구 시스템 아이콘과 `Hello, world!` 문구를 세로로 배치한 기본 화면, `#Preview` 선언입니다.
-- `FOLINA/Assets.xcassets`와 `FOLINA/Preview Content`: 기본 리소스 구조입니다.
-- `FOLINATests`: Swift Testing 기반의 비어 있는 예제 테스트입니다. 기능 검증문은 없습니다.
-- `FOLINAUITests`: 앱 실행, 실행 시간 측정, 스크린샷 수집용 템플릿 코드입니다.
+문서 구축 PR #1이 병합된 `main` 커밋 `7fd35f2`에서 책장 홈 개발을 시작했습니다. 아래 파일은 이번 기능 브랜치의 구현입니다.
 
-현재 다이어리·다꾸 기능, 데이터 모델, 영구 저장, 백엔드 연동은 구현되어 있지 않습니다. 프로젝트에 외부 Swift 패키지 의존성 선언도 발견되지 않았습니다.
+```text
+FOLINA/
+├── FOLINAApp.swift                # 앱 시작
+├── ContentView.swift              # 책장 조립 및 샘플 주입
+├── Screens/Bookshelf/BookshelfView.swift
+├── Components/DiaryCard.swift
+├── Components/DiaryCoverView.swift
+├── DesignSystem/FolinaTheme.swift
+├── Models/DiarySummary.swift       # 책장 표시용 값
+└── SampleData/SampleDiaries.swift  # 저장하지 않는 샘플
+```
+
+화면은 주입받은 목록을 표시합니다. 표지의 제본 종류와 색상 종류를 분리하여 다른 외형을 추가할 수 있게 구성했습니다. 영구 저장 모델·저장소·다른 기능 화면을 미리 만들지 않았습니다.
+
+폴더는 기존 Xcode의 `PBXFileSystemSynchronizedRootGroup` 아래에 있어 소스 목록을 수동 편집하지 않습니다. 기존 테스트 타깃과 프로젝트 설정을 유지합니다.
 
 ## 확인된 프로젝트 설정
 
