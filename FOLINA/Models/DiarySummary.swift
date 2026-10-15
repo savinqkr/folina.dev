@@ -11,10 +11,18 @@ struct DiarySummary: Identifiable {
 struct DiaryCoverStyle {
     let binding: DiaryBinding
     let tone: DiaryCoverTone
+    let design: DiaryCoverDesign
+
+    init(binding: DiaryBinding, tone: DiaryCoverTone, design: DiaryCoverDesign = .classic) {
+        self.binding = binding
+        self.tone = tone
+        self.design = design
+    }
 }
 
 enum DiaryBinding {
     case ringBinder
+    case spiral
     case hardcover
     case softcover
 }
@@ -23,4 +31,15 @@ enum DiaryCoverTone {
     case sage
     case slateBlue
     case rose
+    case cocoa
+    case butter
+    case lavender
+    case kraft
+}
+
+enum DiaryCoverDesign {
+    case classic
+    case leatherWrap
+    case botanicalWindow
+    case kraft
 }

@@ -9,12 +9,16 @@ struct DiaryCoverView: View {
         case .sage: FolinaTheme.Palette.sage
         case .slateBlue: FolinaTheme.Palette.slateBlue
         case .rose: FolinaTheme.Palette.rose
+        case .cocoa: FolinaTheme.Palette.cocoa
+        case .butter: FolinaTheme.Palette.butter
+        case .lavender: FolinaTheme.Palette.lavender
+        case .kraft: FolinaTheme.Palette.kraft
         }
     }
 
     private var isBinder: Bool { diary.cover.binding == .ringBinder }
     private var isHardcover: Bool { diary.cover.binding == .hardcover }
-    private var corner: CGFloat { isHardcover ? 5 : 9 }
+    private var corner: CGFloat { diary.cover.design == .leatherWrap ? 9 : (isHardcover ? 5 : 9) }
 
     var body: some View {
         ZStack(alignment: .topLeading) {
@@ -55,8 +59,11 @@ struct DiaryCoverView: View {
             frontCover
             bindingDecoration
             coverTitle
+            DiaryCoverDecoration(design: diary.cover.design, color: coverColor)
 
-            if diary.cover.binding == .softcover { elasticBand }
+            if diary.cover.binding == .softcover && diary.cover.design == .classic {
+                elasticBand
+            }
         }
         .frame(width: 188, height: 280, alignment: .topLeading)
     }
@@ -103,7 +110,7 @@ struct DiaryCoverView: View {
                     .init(color: .black.opacity(0.12), location: 1)
                 ], startPoint: .leading, endPoint: .trailing)
             }
-            .overlay { CoverMaterial(isCloth: isHardcover) }
+            .overlay { CoverMaterial(isCloth: isHardcover && diary.cover.design != .leatherWrap) }
             .clipShape(RoundedRectangle(cornerRadius: corner))
             .overlay {
                 RoundedRectangle(cornerRadius: corner)
@@ -120,10 +127,13 @@ struct DiaryCoverView: View {
     private var bindingDecoration: some View {
         if isBinder {
             binderRings
+        } else if diary.cover.binding == .spiral {
+            spiralBinding
         } else {
             // 천 제본의 책등과 표지에 눌린 홈입니다.
             RoundedRectangle(cornerRadius: 3)
-                .fill(LinearGradient(colors: [coverColor, FolinaTheme.Palette.spine.opacity(0.6),
+                .fill(LinearGradient(colors: [coverColor, (diary.cover.design == .leatherWrap ? Color.black.opacity(0.25)
+                                               : FolinaTheme.Palette.spine.opacity(0.6)),
                                               coverColor, .black.opacity(0.15)],
                                      startPoint: .leading, endPoint: .trailing))
                 .frame(width: isHardcover ? 20 : 13, height: 268)
@@ -132,6 +142,29 @@ struct DiaryCoverView: View {
                 .frame(width: 1, height: 257)
                 .shadow(color: .white.opacity(0.7), radius: 0.6, x: 1, y: 0)
                 .offset(x: isHardcover ? 23 : 16, y: 6)
+        }
+    }
+
+    private var spiralBinding: some View {
+        ZStack(alignment: .topLeading) {
+            RoundedRectangle(cornerRadius: 3)
+                .fill(.black.opacity(0.12))
+                .frame(width: 9, height: 252)
+                .offset(x: 2, y: 8)
+            ForEach(0..<13, id: \.self) { index in
+                ZStack {
+                    Capsule().fill(.black.opacity(0.4)).frame(width: 5, height: 7).offset(x: 7)
+                    Ellipse()
+                        .stroke(LinearGradient(colors: [.black.opacity(0.6), .white,
+                                                       FolinaTheme.Palette.spine],
+                                               startPoint: .topLeading, endPoint: .bottomTrailing),
+                                lineWidth: 2.5)
+                        .frame(width: 18, height: 9)
+                        .shadow(color: .black.opacity(0.2), radius: 1, x: 1, y: 2)
+                }
+                .frame(width: 22, height: 12)
+                .offset(x: -9, y: 14 + CGFloat(index) * 19)
+            }
         }
     }
 
@@ -196,7 +229,7 @@ struct DiaryCoverView: View {
             }
             .shadow(color: .black.opacity(0.13), radius: 1, x: 0.5, y: 1.5)
             .offset(x: 34, y: 62)
-        } else {
+        } else if diary.cover.design == .classic && diary.cover.binding != .spiral {
             RoundedRectangle(cornerRadius: 2)
                 .strokeBorder(FolinaTheme.Palette.ink.opacity(0.12), lineWidth: 0.6)
                 .frame(width: 132, height: 224)

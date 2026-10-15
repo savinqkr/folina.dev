@@ -14,13 +14,14 @@ FOLINA/
 ├── ContentView.swift              # 책장 조립 및 샘플 주입
 ├── Screens/Bookshelf/BookshelfView.swift
 ├── Components/DiaryCard.swift
+├── Components/DiaryCoverDecoration.swift # 추가 표지 장식
 ├── Components/DiaryCoverView.swift
 ├── DesignSystem/FolinaTheme.swift
 ├── Models/DiarySummary.swift       # 책장 표시용 값
 └── SampleData/SampleDiaries.swift  # 저장하지 않는 샘플
 ```
 
-화면은 주입받은 목록을 표시합니다. 표지의 제본 종류와 색상 종류를 분리하여 다른 외형을 추가할 수 있게 구성했습니다. 영구 저장 모델·저장소·다른 기능 화면을 미리 만들지 않았습니다.
+화면은 주입받은 목록을 표시합니다. 표지의 제본·색상·장식 디자인 종류를 분리하여 다른 외형을 추가할 수 있게 구성했습니다. 영구 저장 모델·저장소·다른 기능 화면을 미리 만들지 않았습니다.
 
 폴더는 기존 Xcode의 `PBXFileSystemSynchronizedRootGroup` 아래에 있어 소스 목록을 수동 편집하지 않습니다. 기존 테스트 타깃과 프로젝트 설정을 유지합니다.
 
