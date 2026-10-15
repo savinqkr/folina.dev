@@ -14,9 +14,9 @@ struct DiaryCreationView: View {
                     VStack(alignment: .leading, spacing: 28) {
                         introduction
                         if geometry.size.width >= 900 {
-                            HStack(alignment: .top, spacing: 21) {
-                                settings.frame(width: (geometry.size.width - 91) * 0.455)
-                                previewPanel.frame(maxWidth: .infinity)
+                            CreationPanelColumns {
+                                settings
+                                previewPanel
                             }
                         } else {
                             VStack(spacing: 24) {
@@ -90,7 +90,24 @@ struct DiaryCreationView: View {
                               selection: $draft.orientation, identifier: "orientation") { Text($0.title) }
         }
         .padding(24)
+        .frame(maxHeight: .infinity, alignment: .top)
         .background(FolinaTheme.Palette.surface, in: RoundedRectangle(cornerRadius: 14))
+    }
+
+    private var coverPreviewImage: some View {
+        DiaryCoverView(diary: draft.previewSummary)
+            .scaleEffect(x: draft.orientation == .landscape ? 0.78 : 0.58,
+                         y: draft.orientation == .landscape ? 0.4 : 0.58)
+            .frame(width: 150, height: 185)
+    }
+
+    private var coverPreviewDetails: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text(draft.displayName).font(FolinaTheme.Typography.label).lineLimit(3)
+            Text("표지 미리보기 · \(draft.coverStyle.title)")
+                .font(FolinaTheme.Typography.caption)
+                .foregroundStyle(FolinaTheme.Palette.secondary)
+        }
     }
 
     private var previewPanel: some View {
@@ -104,16 +121,14 @@ struct DiaryCreationView: View {
                 .accessibilityIdentifier("preview-selection")
             DiaryCreationPreview(draft: draft)
                 .frame(height: 350)
-            HStack(spacing: 18) {
-                DiaryCoverView(diary: draft.previewSummary)
-                    .scaleEffect(x: draft.orientation == .landscape ? 0.48 : 0.36,
-                                 y: draft.orientation == .landscape ? 0.25 : 0.36)
-                    .frame(width: 100, height: 110)
-                VStack(alignment: .leading, spacing: 8) {
-                    Text(draft.displayName).font(FolinaTheme.Typography.label).lineLimit(3)
-                    Text("표지 미리보기 · \(draft.coverStyle.title)")
-                        .font(FolinaTheme.Typography.caption)
-                        .foregroundStyle(FolinaTheme.Palette.secondary)
+            ViewThatFits(in: .horizontal) {
+                HStack(spacing: 18) {
+                    coverPreviewImage
+                    coverPreviewDetails.frame(minWidth: 150, maxWidth: .infinity, alignment: .leading)
+                }
+                VStack(alignment: .leading, spacing: 12) {
+                    coverPreviewImage
+                    coverPreviewDetails
                 }
             }
             Text("외형을 바꿔도 선택한 기록 방식과 속지는 유지돼요.")
@@ -131,10 +146,42 @@ struct DiaryCreationView: View {
             .frame(maxWidth: .infinity, alignment: .trailing)
         }
         .padding(24)
+        .frame(maxHeight: .infinity, alignment: .top)
         .background(FolinaTheme.Palette.collection, in: RoundedRectangle(cornerRadius: 14))
     }
 }
 
 #Preview("새 다이어리 만들기") {
     NavigationStack { DiaryCreationView() }
+}
+
+/// 두 패널의 자연스러운 높이를 측정해 긴 쪽에 맞춰 같은 높이를 제안합니다.
+private struct CreationPanelColumns: Layout {
+    private let spacing: CGFloat = 21
+    private let leadingFraction: CGFloat = 0.455
+
+    func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
+        guard subviews.count == 2 else { return .zero }
+        let width = proposal.width ?? 900
+        let widths = columnWidths(total: width)
+        let height = zip(subviews, widths).map { view, columnWidth in
+            view.sizeThatFits(ProposedViewSize(width: columnWidth, height: nil)).height
+        }.max() ?? 0
+        return CGSize(width: width, height: height)
+    }
+
+    func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) {
+        guard subviews.count == 2 else { return }
+        let widths = columnWidths(total: bounds.width)
+        subviews[0].place(at: bounds.origin, anchor: .topLeading,
+                          proposal: ProposedViewSize(width: widths[0], height: bounds.height))
+        subviews[1].place(at: CGPoint(x: bounds.minX + widths[0] + spacing, y: bounds.minY),
+                          anchor: .topLeading,
+                          proposal: ProposedViewSize(width: widths[1], height: bounds.height))
+    }
+
+    private func columnWidths(total: CGFloat) -> [CGFloat] {
+        let available = max(0, total - spacing)
+        return [available * leadingFraction, available * (1 - leadingFraction)]
+    }
 }
