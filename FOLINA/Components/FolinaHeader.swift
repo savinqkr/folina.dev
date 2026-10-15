@@ -8,7 +8,7 @@ struct FolinaHeader: View {
                     .renderingMode(.original)
                     .resizable()
                     .scaledToFit()
-                    .frame(width: 36, height: 36)
+                    .frame(width: 30, height: 30)
                     .accessibilityHidden(true)
                 Text("FOLINA").font(FolinaTheme.Typography.brand)
             }

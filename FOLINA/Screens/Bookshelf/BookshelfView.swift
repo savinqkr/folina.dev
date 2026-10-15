@@ -2,14 +2,15 @@ import SwiftUI
 
 struct BookshelfView: View {
     let diaries: [DiarySummary]
+    @State private var isSidebarExpanded = true
 
     var body: some View {
         GeometryReader { geometry in
             VStack(spacing: 0) {
                 FolinaHeader()
                 HStack(spacing: 0) {
-                    if geometry.size.width >= 900 {
-                        sidebar
+                    if geometry.size.width >= 600 {
+                        BookshelfSidebar(isExpanded: $isSidebarExpanded)
                     }
                     bookshelf
                 }
@@ -17,30 +18,6 @@ struct BookshelfView: View {
         }
         .background(FolinaTheme.Palette.canvas)
         .preferredColorScheme(.light)
-    }
-
-    private var sidebar: some View {
-        VStack(alignment: .leading, spacing: FolinaTheme.Spacing.large) {
-            Text("내 다이어리")
-                .font(FolinaTheme.Typography.label)
-                .foregroundStyle(FolinaTheme.Palette.ink)
-                .padding(.horizontal, FolinaTheme.Spacing.medium)
-                .frame(maxWidth: .infinity, minHeight: 44, alignment: .leading)
-                .background(FolinaTheme.Palette.selection, in: RoundedRectangle(cornerRadius: 7))
-                .accessibilityAddTraits(.isSelected)
-            ForEach(["무료 굿즈", "내 굿즈", "설정"], id: \.self) { title in
-                Text(title)
-                    .font(FolinaTheme.Typography.body)
-                    .foregroundStyle(FolinaTheme.Palette.secondary)
-                    .padding(.horizontal, FolinaTheme.Spacing.medium)
-                    .accessibilityLabel("\(title), 준비 중")
-            }
-            Spacer(minLength: 0)
-        }
-        .padding(.horizontal, 13)
-        .padding(.top, FolinaTheme.Spacing.section)
-        .frame(width: 195)
-        .background(FolinaTheme.Palette.surface)
     }
 
     private var bookshelf: some View {

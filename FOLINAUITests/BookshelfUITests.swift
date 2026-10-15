@@ -56,6 +56,31 @@ final class BookshelfUITests: XCTestCase {
     }
 
     @MainActor
+    func testSidebarCanCollapseExpandAndShowMarketNotice() {
+        let app = XCUIApplication()
+        XCUIDevice.shared.orientation = .landscapeLeft
+        defer { XCUIDevice.shared.orientation = .portrait }
+        app.launch()
+        let toggle = app.buttons["sidebar-toggle"]
+        XCTAssertTrue(toggle.waitForExistence(timeout: 5))
+        let diaries = app.buttons["sidebar-diaries"]
+        let expandedWidth = diaries.frame.width
+        toggle.tap()
+        XCTAssertEqual(toggle.value as? String, "접힘")
+        XCTAssertLessThan(diaries.frame.width, expandedWidth)
+        for id in ["diaries", "freeGoods", "myGoods", "market", "settings"] {
+            XCTAssertTrue(app.buttons["sidebar-\(id)"].isHittable)
+        }
+        app.buttons["sidebar-market"].tap()
+        XCTAssertTrue(app.alerts["마켓"].waitForExistence(timeout: 3))
+        app.alerts["마켓"].buttons["확인"].tap()
+        toggle.tap()
+        XCTAssertEqual(toggle.value as? String, "펼쳐짐")
+        XCTAssertEqual(diaries.frame.width, expandedWidth, accuracy: 1)
+        XCTAssertTrue(app.buttons["create-diary"].exists)
+    }
+
+    @MainActor
     private func tap(_ identifier: String, in app: XCUIApplication) {
         let button = app.buttons[identifier]
         for _ in 0..<12 {
