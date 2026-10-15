@@ -56,13 +56,6 @@ struct DiaryCoverColorPicker: View {
         Circle()
             .fill(color)
             .overlay { Circle().strokeBorder(.black.opacity(0.12), lineWidth: 1) }
-            .overlay {
-                if selected {
-                    Image(systemName: "checkmark")
-                        .font(.system(size: 13, weight: .medium))
-                        .foregroundStyle(FolinaTheme.Palette.spine)
-                }
-            }
             .frame(width: 32, height: 32)
             .padding(5)
             .overlay {
