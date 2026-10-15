@@ -2,7 +2,7 @@
 
 - 원본/근거: [PRD](https://app.notion.com/p/3f91e7915bce8167a6aff13f6915004e) · [기능 명세](https://app.notion.com/p/3f91e7915bce81f89817c482350c29da) · [IA](https://app.notion.com/p/3f91e7915bce812b9cb6bba4345c) · [MVP 정책](https://app.notion.com/p/3f91e7915bce8177a7fcf5b86d220de7) · [상품 및 데이터 모델](https://app.notion.com/p/3f91e7915bce813085e3fe2b6ae1f8a0) · [개발 핸드오프 및 백로그](https://app.notion.com/p/3f91e7915bce81e78a27d64a54ec2f67) · [Figma](https://www.figma.com/design/FFQxwcgxtazngCK8Sp26hv/Untitled) · [FigJam](https://www.figma.com/board/xe98koWxDTV0LYXXboiROy/Untitled)
 - 확인일: 2026-10-15 (한국 시간, 외부 원본은 접근 시도일)
-- 문서 상태: 관리 규칙 확정 / Figma 책장 홈 확인 / 나머지 원본 확인 필요
+- 문서 상태: 관리 규칙 확정 / Figma 및 Notion 일부 확인 / 나머지 원본 확인 필요
 
 ## 원본과 GitHub 문서의 역할
 
@@ -64,3 +64,9 @@ Notion IA 링크는 제공받은 주소를 그대로 기록했습니다. 유효�
 6. 가능한 검증을 수행하고 실행하지 못한 검증을 명시한 뒤 Pull Request로 검토합니다.
 
 한 내용은 담당 문서 한 곳에서 관리하고 다른 문서에서는 링크합니다. 자료 확인이 필요한 항목의 통합 목록은 [백로그](development/backlog.md)에서 관리합니다.
+
+## 3차 개발 원본 확인 — 2026-10-16
+
+연결된 Notion 도구로 기능 명세·MVP 정책·상품 및 데이터 모델을 열람했습니다. 관련 확인 내용과 범위 차이는 [제품 정책](product/policies.md) 및 [데이터 모델](architecture/data-model.md)에 반영했습니다. 이전 프록시 차단 기록은 당시 결과이며 현재 접근 불가를 의미하지 않습니다. 모든 원본을 확인한 것은 아닙니다.
+
+실제 로컬 생성·책장 연결 및 오류 처리는 구현했으며 [Mac 검증 절차](development/local-storage-verification.md)를 따릅니다. Linux에서 앱 실행 결과는 확인하지 못했습니다.
