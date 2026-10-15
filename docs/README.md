@@ -74,3 +74,7 @@ Notion IA 링크는 제공받은 주소를 그대로 기록했습니다. 유효�
 ## 4차 개발 — 읽기 및 페이지 탐색
 
 Figma v5 읽기 27:125를 2026-10-16에 열람했습니다. 원본 에셋 다운로드 403과 구현 차이는 [읽기 명세](design/reading-spec.md)에, 수동/자동 검증 상태는 [읽기 검증](development/reading-verification.md)에 기록합니다. 기존 저장 모델의 선택적 책갈피 확장은 [데이터 모델](architecture/data-model.md)을 참고합니다.
+
+## 5차 개발 — 기본 필기 편집기
+
+[편집 화면](design/editor-spec.md), [필기 저장·좌표·엔진 구조](architecture/ink-editor.md), [검증 절차](development/editor-verification.md)를 참고합니다. Notion 편집/저장/Pencil 정책과 Figma 27:168·27:257 스크린샷을 2026-10-16에 열람했습니다.

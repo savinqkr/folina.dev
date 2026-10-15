@@ -3,6 +3,7 @@ import SwiftUI
 /// 읽기 종이만 담당합니다. 편집기나 페이지 이동 제스처를 소유하지 않습니다.
 struct DiaryReadingPaper: View {
     let page: DiaryPage
+    let inkRefresh: Int
     let number: Int
     let isSelected: Bool
     let isBookmarked: Bool
@@ -11,7 +12,14 @@ struct DiaryReadingPaper: View {
     var body: some View {
         Button(action: select) {
             ZStack(alignment: .topTrailing) {
-                DiaryPaperSurface(pattern: page.paper)
+                GeometryReader { geometry in
+                    let width = page.widthMM * 4
+                    let height = page.heightMM * 4
+                    DiaryPaperSurface(pattern: page.paper)
+                        .frame(width: width, height: height)
+                        .scaleEffect(geometry.size.width / width, anchor: .topLeading)
+                }
+                PageInkOverlay(page: page, refresh: inkRefresh)
                 VStack {
                     HStack {
                         if let date = page.date { Text(date.readingLabel) }
@@ -50,6 +58,7 @@ struct DiaryReadingBook: View {
     let indices: [Int]
     let spread: Bool
     let selectedID: UUID?
+    var inkRefresh: Int = 0
     let select: (UUID) -> Void
 
     var body: some View {
@@ -62,7 +71,7 @@ struct DiaryReadingBook: View {
             HStack(spacing: 10) {
                 ForEach(indices, id: \.self) { index in
                     let page = document.pages[index]
-                    DiaryReadingPaper(page: page, number: index + 1,
+                    DiaryReadingPaper(page: page, inkRefresh: inkRefresh, number: index + 1,
                                       isSelected: selectedID == page.id,
                                       isBookmarked: document.bookmarks.contains(page.id)) {
                         select(page.id)

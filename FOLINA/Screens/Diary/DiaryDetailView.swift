@@ -11,7 +11,8 @@ struct DiaryDetailView: View {
     @State private var isSaving = false
     @State private var isTurning = false
     @State private var errorMessage: String?
-    @State private var showEditorNotice = false
+    @State private var editingPage: DiaryPage?
+    @State private var inkRefresh = 0
     @State private var turnForward = true
     @ScaledMetric(relativeTo: .body) private var controlHeight = 52.0
 
@@ -35,7 +36,9 @@ struct DiaryDetailView: View {
                     Spacer(minLength: 8)
                     Text(current.title).font(.headline).lineLimit(2).accessibilityAddTraits(.isHeader)
                     Spacer(minLength: 8)
-                    Button("편집 준비 중") { showEditorNotice = true }
+                    Button("편집") {
+                        editingPage = current.pages.first { $0.id == position.pageID }
+                    }.disabled(position.pageID == nil || isTurning)
                 }
                 .font(.subheadline)
                 .padding(20)
@@ -45,7 +48,7 @@ struct DiaryDetailView: View {
                 } else {
                     let indices = position.visibleIndices(in: current.pages, spread: spread)
                     DiaryReadingBook(document: current, indices: indices, spread: spread,
-                                     selectedID: position.pageID) { id in
+                                     selectedID: position.pageID, inkRefresh: inkRefresh) { id in
                         guard !isTurning else { return }
                         position.select(id, in: current.pages)
                     }
@@ -83,9 +86,9 @@ struct DiaryDetailView: View {
             get: { errorMessage != nil }, set: { if !$0 { errorMessage = nil } })) {
                 Button("확인", role: .cancel) { errorMessage = nil }
             } message: { Text(errorMessage ?? "") }
-        .alert("편집 기능은 준비 중이에요", isPresented: $showEditorNotice) {
-            Button("확인", role: .cancel) { }
-        } message: { Text("지금은 읽기와 페이지 탐색, 책갈피를 사용할 수 있어요.") }
+        .fullScreenCover(item: $editingPage, onDismiss: { inkRefresh += 1 }) { page in
+            DiaryEditorView(title: current.title, page: page)
+        }
     }
 
     private func navigation(spread: Bool) -> some View {

@@ -42,3 +42,8 @@ Mac에서 앱 빌드·UI 테스트·가로/세로·좁은 창·큰 글자 및 Fi
 Mac 빌드·전체 단위/UI 테스트, 여러 페이지 펼침·회전·연속 스와이프의 수동 시각 검증, Figma 링 SVG 다운로드 복구 및 시각 비교가 남아 있습니다. Folina 프로젝트 목록 조회는 GitHub 통합 권한 오류로 실패했습니다.
 
 상세 내용은 [읽기 명세](../design/reading-spec.md)와 [읽기 검증](../development/reading-verification.md)을 참고합니다.
+
+## 5차 후속 검증
+
+- Mac/iPad 빌드·입력·Undo·렌더링·회전·백그라운드 저장·대용량 성능 검증: [체크리스트](editor-verification.md).
+- 핀치/회전·고급 브러시·다중 레이어·sidecar 포함 백업/삭제·다기기 충돌 정책은 후속 범위.
