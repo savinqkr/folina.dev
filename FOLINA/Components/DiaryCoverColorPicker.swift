@@ -29,8 +29,8 @@ struct DiaryCoverColorPicker: View {
                     .labelsHidden()
                     .frame(width: 48, height: 48)
                     .background {
-                        Circle().strokeBorder(draft.customColor == nil ? Color.clear : FolinaTheme.Palette.ink,
-                                              lineWidth: 2)
+                        Circle().strokeBorder(draft.customColor == nil ? Color.clear : FolinaTheme.Palette.spine.opacity(0.75),
+                                              lineWidth: 1.5)
                     }
                     .accessibilityLabel("사용자 색상 선택")
                     .accessibilityValue(draft.customColor == nil ? "선택 안 됨" : "선택됨")
@@ -59,14 +59,14 @@ struct DiaryCoverColorPicker: View {
             .overlay {
                 if selected {
                     Image(systemName: "checkmark")
-                        .font(.system(size: 13, weight: .bold))
-                        .foregroundStyle(FolinaTheme.Palette.ink)
+                        .font(.system(size: 13, weight: .medium))
+                        .foregroundStyle(FolinaTheme.Palette.spine)
                 }
             }
             .frame(width: 32, height: 32)
             .padding(5)
             .overlay {
-                Circle().strokeBorder(selected ? FolinaTheme.Palette.ink : .clear, lineWidth: 2)
+                Circle().strokeBorder(selected ? FolinaTheme.Palette.spine.opacity(0.75) : .clear, lineWidth: 1.5)
             }
             .frame(width: 48, height: 48)
             .contentShape(Circle())

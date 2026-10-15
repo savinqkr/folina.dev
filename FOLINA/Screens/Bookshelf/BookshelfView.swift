@@ -6,7 +6,7 @@ struct BookshelfView: View {
     var body: some View {
         GeometryReader { geometry in
             VStack(spacing: 0) {
-                FolinaHeader(section: "LIBRARY")
+                FolinaHeader()
                 HStack(spacing: 0) {
                     if geometry.size.width >= 900 {
                         sidebar

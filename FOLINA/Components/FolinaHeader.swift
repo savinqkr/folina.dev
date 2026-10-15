@@ -1,8 +1,6 @@
 import SwiftUI
 
 struct FolinaHeader: View {
-    let section: String
-
     var body: some View {
         HStack {
             HStack(spacing: 8) {
@@ -15,9 +13,6 @@ struct FolinaHeader: View {
                 Text("FOLINA").font(FolinaTheme.Typography.brand)
             }
             Spacer()
-            Text(section)
-                .font(FolinaTheme.Typography.caption)
-                .foregroundStyle(FolinaTheme.Palette.secondary)
         }
         .foregroundStyle(FolinaTheme.Palette.ink)
         .padding(.horizontal, 28)

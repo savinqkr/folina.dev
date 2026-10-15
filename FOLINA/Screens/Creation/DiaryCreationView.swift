@@ -9,7 +9,7 @@ struct DiaryCreationView: View {
     var body: some View {
         GeometryReader { geometry in
             VStack(spacing: 0) {
-                FolinaHeader(section: "CREATE")
+                FolinaHeader()
                 ScrollView {
                     VStack(alignment: .leading, spacing: 28) {
                         introduction
