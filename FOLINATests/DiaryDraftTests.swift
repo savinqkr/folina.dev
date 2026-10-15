@@ -34,6 +34,19 @@ struct DiaryDraftTests {
         }
     }
 
+    @Test func customColorReachesPreviewAndPresetResetsIt() {
+        var draft = DiaryDraft()
+        let color = DiaryCustomColor(red: 0.2, green: 0.4, blue: 0.8)
+        draft.customColor = color
+        draft.binding = .hardcover
+        #expect(draft.previewSummary.cover.customColor == color)
+        #expect(draft.selectionDescription.contains("사용자 색상"))
+        draft.selectTone(.lavender)
+        #expect(draft.customColor == nil)
+        #expect(draft.previewSummary.cover.tone == .lavender)
+        #expect(draft.selectionDescription.contains("라벤더"))
+    }
+
     @Test func nameFallbackDoesNotMutateEnteredName() {
         var draft = DiaryDraft()
         draft.name = " \n "

@@ -23,7 +23,7 @@ struct DiaryCreationPreview: View {
     private var spread: some View {
         ZStack {
             RoundedRectangle(cornerRadius: draft.binding == .hardcover ? 6 : 11)
-                .fill(draft.tone.color.gradient)
+                .fill(draft.coverColor.gradient)
                 .overlay {
                     RoundedRectangle(cornerRadius: 11)
                         .strokeBorder(.white.opacity(0.4), lineWidth: 1)

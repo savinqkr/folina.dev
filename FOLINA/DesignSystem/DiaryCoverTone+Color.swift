@@ -13,3 +13,11 @@ extension DiaryCoverTone {
         }
     }
 }
+
+extension DiaryCustomColor {
+    var color: Color { Color(.sRGB, red: red, green: green, blue: blue, opacity: 1) }
+}
+
+extension DiaryDraft {
+    var coverColor: Color { customColor?.color ?? tone.color }
+}

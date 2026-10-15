@@ -4,7 +4,7 @@ import SwiftUI
 struct DiaryCoverView: View {
     let diary: DiarySummary
 
-    private var coverColor: Color { diary.cover.tone.color }
+    private var coverColor: Color { diary.cover.customColor?.color ?? diary.cover.tone.color }
 
     private var isBinder: Bool { diary.cover.binding == .ringBinder }
     private var isHardcover: Bool { diary.cover.binding == .hardcover }

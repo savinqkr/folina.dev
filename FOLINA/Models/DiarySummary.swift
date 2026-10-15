@@ -12,11 +12,14 @@ struct DiaryCoverStyle {
     let binding: DiaryBinding
     let tone: DiaryCoverTone
     let design: DiaryCoverDesign
+    let customColor: DiaryCustomColor?
 
-    init(binding: DiaryBinding, tone: DiaryCoverTone, design: DiaryCoverDesign = .classic) {
+    init(binding: DiaryBinding, tone: DiaryCoverTone, design: DiaryCoverDesign = .classic,
+         customColor: DiaryCustomColor? = nil) {
         self.binding = binding
         self.tone = tone
         self.design = design
+        self.customColor = customColor
     }
 }
 

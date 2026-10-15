@@ -6,9 +6,15 @@ struct DiaryDraft: Equatable, Codable {
     var kind: DiaryKind = .dated
     var binding: DiaryBinding = .ringBinder
     var tone: DiaryCoverTone = .sage
+    var customColor: DiaryCustomColor?
     var coverStyle: CreationCoverStyle = .classic
     var paper: DiaryPaper = .blank
     var orientation: DiaryOrientation = .portrait
+
+    mutating func selectTone(_ tone: DiaryCoverTone) {
+        self.tone = tone
+        customColor = nil
+    }
 
     var displayName: String {
         let trimmed = name.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -17,11 +23,11 @@ struct DiaryDraft: Equatable, Codable {
 
     var previewSummary: DiarySummary {
         DiarySummary(id: "creation-preview", title: displayName, subtitle: kind.title,
-                     cover: DiaryCoverStyle(binding: binding, tone: tone, design: coverStyle.design))
+                     cover: DiaryCoverStyle(binding: binding, tone: tone, design: coverStyle.design, customColor: customColor))
     }
 
     var selectionDescription: String {
-        [kind.title, binding.title, tone.title, coverStyle.title, paper.title, orientation.title]
+        [kind.title, binding.title, customColor == nil ? tone.title : "사용자 색상", coverStyle.title, paper.title, orientation.title]
             .joined(separator: " · ")
     }
 }
@@ -94,4 +100,11 @@ enum DiaryPaper: String, CaseIterable, Codable, DiaryOption {
 enum DiaryOrientation: String, CaseIterable, Codable, DiaryOption {
     case portrait, landscape
     var title: String { self == .portrait ? "세로" : "가로" }
+}
+
+/// 불투명 sRGB 값. SwiftUI Color와 분리하여 초안에 보관합니다.
+struct DiaryCustomColor: Equatable, Codable {
+    let red: Double
+    let green: Double
+    let blue: Double
 }

@@ -81,13 +81,7 @@ struct DiaryCreationView: View {
                               selection: $draft.kind, identifier: "kind") { Text($0.title) }
             DiaryOptionPicker(title: "다이어리 외형", options: DiaryBinding.creationOptions,
                               selection: $draft.binding, identifier: "binding") { Text($0.title) }
-            DiaryOptionPicker(title: "표지 색상", options: DiaryCoverTone.creationOptions,
-                              selection: $draft.tone, identifier: "tone") { tone in
-                Circle().fill(tone.color).frame(width: 18, height: 18)
-                    .overlay { Circle().strokeBorder(.black.opacity(0.1), lineWidth: 1) }
-                    .accessibilityHidden(true)
-                Text(tone.title)
-            }
+            DiaryCoverColorPicker(draft: $draft)
             DiaryOptionPicker(title: "표지 스타일", options: CreationCoverStyle.allCases,
                               selection: $draft.coverStyle, identifier: "cover") { Text($0.title) }
             DiaryOptionPicker(title: "속지", options: DiaryPaper.allCases,
