@@ -6,6 +6,9 @@ struct DiaryCoverView: View {
 
     private var coverColor: Color { diary.cover.customColor?.color ?? diary.cover.tone.color }
 
+    private var isLandscape: Bool { diary.orientation == .landscape }
+    private func h(_ value: CGFloat) -> CGFloat { isLandscape ? value * 0.45 : value }
+
     private var isBinder: Bool { diary.cover.binding == .ringBinder }
     private var isHardcover: Bool { diary.cover.binding == .hardcover }
     private var corner: CGFloat { diary.cover.design == .leatherWrap ? 9 : (isHardcover ? 5 : 9) }
@@ -15,7 +18,7 @@ struct DiaryCoverView: View {
             // 바닥에 닿는 그림자와 떨어진 부분의 부드러운 그림자를 나눕니다.
             RoundedRectangle(cornerRadius: corner)
                 .fill(FolinaTheme.Palette.ink.opacity(0.18))
-                .frame(width: 174, height: 261)
+                .frame(width: 174, height: h(261))
                 .blur(radius: 8)
                 .offset(x: 12, y: 16)
 
@@ -26,7 +29,7 @@ struct DiaryCoverView: View {
                 .offset(x: 5, y: 2)
         }
         // 원근·링·종이 단면까지 카드 안에 들어가는 여백입니다.
-        .frame(width: 192, height: 287, alignment: .topLeading)
+        .frame(width: 192, height: h(287), alignment: .topLeading)
         .accessibilityHidden(true)
     }
 
@@ -39,7 +42,7 @@ struct DiaryCoverView: View {
                     RoundedRectangle(cornerRadius: corner)
                         .strokeBorder(FolinaTheme.Palette.ink.opacity(0.22), lineWidth: 0.8)
                 }
-                .frame(width: 180, height: 269)
+                .frame(width: 180, height: h(269))
                 .offset(x: 8, y: 11)
 
             paperBlock
@@ -50,12 +53,14 @@ struct DiaryCoverView: View {
             bindingDecoration
             coverTitle
             DiaryCoverDecoration(design: diary.cover.design, color: coverColor)
+                .scaleEffect(isLandscape ? 0.45 : 1, anchor: .topLeading)
+                .offset(x: isLandscape ? 50 : 0)
 
             if diary.cover.binding == .softcover && diary.cover.design == .classic {
                 elasticBand
             }
         }
-        .frame(width: 188, height: 280, alignment: .topLeading)
+        .frame(width: 188, height: h(280), alignment: .topLeading)
     }
 
     private var paperBlock: some View {
@@ -83,7 +88,7 @@ struct DiaryCoverView: View {
                 RoundedRectangle(cornerRadius: 4)
                     .strokeBorder(.black.opacity(0.12), lineWidth: 0.6)
             }
-            .frame(width: 175, height: 260)
+            .frame(width: 175, height: h(260))
             .offset(x: 10, y: 13)
     }
 
@@ -109,7 +114,7 @@ struct DiaryCoverView: View {
                                                  startPoint: .topLeading, endPoint: .bottomTrailing),
                                   lineWidth: 1)
             }
-            .frame(width: 180, height: 269)
+            .frame(width: 180, height: h(269))
             .shadow(color: .black.opacity(0.14), radius: 1.2, x: 2, y: 2)
     }
 
@@ -126,10 +131,10 @@ struct DiaryCoverView: View {
                                                : FolinaTheme.Palette.spine.opacity(0.6)),
                                               coverColor, .black.opacity(0.15)],
                                      startPoint: .leading, endPoint: .trailing))
-                .frame(width: isHardcover ? 20 : 13, height: 268)
+                .frame(width: isHardcover ? 20 : 13, height: h(268))
             Rectangle()
                 .fill(.black.opacity(0.13))
-                .frame(width: 1, height: 257)
+                .frame(width: 1, height: h(257))
                 .shadow(color: .white.opacity(0.7), radius: 0.6, x: 1, y: 0)
                 .offset(x: isHardcover ? 23 : 16, y: 6)
         }
@@ -139,9 +144,9 @@ struct DiaryCoverView: View {
         ZStack(alignment: .topLeading) {
             RoundedRectangle(cornerRadius: 3)
                 .fill(.black.opacity(0.12))
-                .frame(width: 9, height: 252)
+                .frame(width: 9, height: h(252))
                 .offset(x: 2, y: 8)
-            ForEach(0..<13, id: \.self) { index in
+            ForEach(0..<(isLandscape ? 6 : 13), id: \.self) { index in
                 ZStack {
                     Capsule().fill(.black.opacity(0.4)).frame(width: 5, height: 7).offset(x: 7)
                     Ellipse()
@@ -164,10 +169,10 @@ struct DiaryCoverView: View {
                 .fill(LinearGradient(colors: [.black.opacity(0.15), .white.opacity(0.15),
                                               .black.opacity(0.12)],
                                      startPoint: .leading, endPoint: .trailing))
-                .frame(width: 15, height: 249)
+                .frame(width: 15, height: h(249))
                 .offset(x: 3, y: 10)
-            ForEach(0..<6, id: \.self) { index in
-                MetalBinderRing().offset(x: -9, y: 29 + CGFloat(index) * 40)
+            ForEach(0..<(isLandscape ? 3 : 6), id: \.self) { index in
+                MetalBinderRing().offset(x: -9, y: (isLandscape ? 12 : 29) + CGFloat(index) * 40)
             }
         }
     }
@@ -175,16 +180,18 @@ struct DiaryCoverView: View {
     @ViewBuilder
     private var coverTitle: some View {
         if isBinder && diary.cover.design == .classic {
-            VStack(alignment: .leading, spacing: 12) {
+            VStack(alignment: .leading, spacing: isLandscape ? 4 : 12) {
                 Text("PERSONAL JOURNAL").font(.system(size: 7, weight: .medium)).tracking(1.1)
                 Text(diary.title)
                     .font(FolinaTheme.Typography.handwrittenCover)
+                    .minimumScaleFactor(0.7)
+                    .lineLimit(isLandscape ? 1 : nil)
                     .fixedSize(horizontal: false, vertical: true)
                 Rectangle().fill(FolinaTheme.Palette.ink.opacity(0.2)).frame(height: 0.6)
                 Text("VOL. 01  /  2026").font(.system(size: 8)).tracking(0.6)
             }
             .foregroundStyle(FolinaTheme.Palette.ink.opacity(0.8))
-            .padding(14)
+            .padding(isLandscape ? 8 : 14)
             .frame(width: 126, alignment: .leading)
             .background(Color(white: 0.97), in: RoundedRectangle(cornerRadius: 2))
             .overlay {
@@ -192,11 +199,11 @@ struct DiaryCoverView: View {
                     .strokeBorder(.black.opacity(0.09), lineWidth: 0.7)
             }
             .shadow(color: .black.opacity(0.13), radius: 1, x: 0.5, y: 1.5)
-            .offset(x: 34, y: 62)
+            .offset(x: 34, y: isLandscape ? 25 : 62)
         } else if diary.cover.design == .classic && diary.cover.binding != .spiral {
             RoundedRectangle(cornerRadius: 2)
                 .strokeBorder(FolinaTheme.Palette.ink.opacity(0.12), lineWidth: 0.6)
-                .frame(width: 132, height: 224)
+                .frame(width: 132, height: isLandscape ? h(269) - 42 : 224)
                 .offset(x: 32, y: 21)
         }
     }
@@ -208,7 +215,7 @@ struct DiaryCoverView: View {
                                  startPoint: .leading, endPoint: .trailing))
             .frame(width: 10, height: 28)
             .rotationEffect(.degrees(-7), anchor: .top)
-            .offset(x: 131, y: 251)
+            .offset(x: 131, y: h(269) - 18)
     }
 
     private var elasticBand: some View {
@@ -217,7 +224,7 @@ struct DiaryCoverView: View {
                                           FolinaTheme.Palette.rose,
                                           FolinaTheme.Palette.softSpine],
                                  startPoint: .leading, endPoint: .trailing))
-            .frame(width: 7, height: 270)
+            .frame(width: 7, height: h(270))
             .shadow(color: .black.opacity(0.2), radius: 1, x: 1.5, y: 0)
             .offset(x: 160, y: 0)
     }

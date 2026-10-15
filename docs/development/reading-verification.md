@@ -65,3 +65,7 @@
 | 수정 | `docs/product/feature-spec.md` |
 | 수정 | `docs/product/mvp-scope.md` |
 | 수정 | `docs/product/policies.md` |
+
+### 후속 요청 — 책장 방향 구분
+
+추가 수정: `FOLINA/Models/DiarySummary.swift`, `FOLINA/Models/DiaryDraft.swift`, `FOLINA/Components/DiaryCard.swift`, `FOLINA/Components/DiaryCoverView.swift`. 문서/표시 투영에 방향을 전달하고 표지 비율 및 가로형/세로형 설명을 적용했습니다. Mac에서 두 방향을 각각 생성해 책장 표지와 제목 정렬을 비교해야 합니다.

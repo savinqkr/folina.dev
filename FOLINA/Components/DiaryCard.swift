@@ -7,12 +7,13 @@ struct DiaryCard: View {
     var body: some View {
         VStack(alignment: .center, spacing: FolinaTheme.Spacing.small) {
             DiaryCoverView(diary: diary)
+                .frame(height: 287, alignment: .bottom)
             Text(diary.title)
                 .font(FolinaTheme.Typography.label)
                 .foregroundStyle(FolinaTheme.Palette.ink)
                 .fixedSize(horizontal: false, vertical: true)
                 .frame(maxWidth: .infinity)
-            Text(diary.subtitle)
+            Text("\(diary.subtitle) · \(diary.orientation.title)형")
                 .font(FolinaTheme.Typography.caption)
                 .foregroundStyle(FolinaTheme.Palette.secondary)
                 .fixedSize(horizontal: false, vertical: true)
@@ -22,7 +23,7 @@ struct DiaryCard: View {
         .multilineTextAlignment(.center)
         .frame(maxWidth: .infinity, alignment: .leading)
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel("\(diary.title), \(diary.subtitle), \(isSample ? "샘플 다이어리" : "내 다이어리")")
+        .accessibilityLabel("\(diary.title), \(diary.subtitle), \(diary.orientation.title)형, \(isSample ? "샘플 다이어리" : "내 다이어리")")
         .accessibilityIdentifier(diary.id)
     }
 }

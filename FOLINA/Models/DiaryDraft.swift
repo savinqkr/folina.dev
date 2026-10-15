@@ -23,7 +23,7 @@ struct DiaryDraft: Equatable, Codable {
 
     var previewSummary: DiarySummary {
         DiarySummary(id: "creation-preview", title: displayName, subtitle: kind.title,
-                     cover: DiaryCoverStyle(binding: binding, tone: tone, design: coverStyle.design, customColor: customColor))
+                     cover: DiaryCoverStyle(binding: binding, tone: tone, design: coverStyle.design, customColor: customColor), orientation: orientation)
     }
 
     var selectionDescription: String {

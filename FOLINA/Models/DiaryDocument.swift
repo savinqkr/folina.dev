@@ -37,7 +37,7 @@ struct DiaryDocument: Codable, Equatable, Identifiable {
     var summary: DiarySummary {
         DiarySummary(id: id.uuidString, title: title,
                      subtitle: "\(options.kind.title) · \(options.binding.title)",
-                     cover: options.previewSummary.cover)
+                     cover: options.previewSummary.cover, orientation: options.orientation)
     }
 }
 

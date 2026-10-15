@@ -6,6 +6,7 @@ struct DiarySummary: Identifiable {
     let title: String
     let subtitle: String
     let cover: DiaryCoverStyle
+    var orientation: DiaryOrientation = .portrait
 }
 
 struct DiaryCoverStyle {
