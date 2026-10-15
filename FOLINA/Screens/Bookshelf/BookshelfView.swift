@@ -22,7 +22,7 @@ struct BookshelfView: View {
 
     private var bookshelf: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: FolinaTheme.Spacing.section) {
+            VStack(alignment: .leading, spacing: 40) {
                 ViewThatFits(in: .horizontal) {
                     HStack(alignment: .center, spacing: FolinaTheme.Spacing.large) {
                         introduction
