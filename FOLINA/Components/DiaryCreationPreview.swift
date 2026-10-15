@@ -50,8 +50,8 @@ struct DiaryCreationPreview: View {
                     }
                 }
             HStack(spacing: 10) {
-                PreviewPaper(pattern: draft.paper)
-                PreviewPaper(pattern: draft.paper)
+                standardPage(isLeft: true)
+                standardPage(isLeft: false)
             }
             .frame(width: 495, height: bookHeight - 25)
             .offset(y: -4)
@@ -65,6 +65,22 @@ struct DiaryCreationPreview: View {
                 .padding(.vertical, 28)
             }
         }
+    }
+
+    private func standardPage(isLeft: Bool) -> some View {
+        let depth = draft.binding == .ringBinder ? 0.12 : 0.18
+        return PreviewPaper(pattern: draft.paper)
+            .overlay {
+                LinearGradient(stops: [
+                    .init(color: .clear, location: 0),
+                    .init(color: .clear, location: 0.55),
+                    .init(color: .white.opacity(0.18), location: 0.73),
+                    .init(color: .black.opacity(depth * 0.2), location: 0.88),
+                    .init(color: .black.opacity(depth), location: 1)
+                ], startPoint: isLeft ? .leading : .trailing,
+                   endPoint: isLeft ? .trailing : .leading)
+            }
+            .clipShape(RoundedRectangle(cornerRadius: 4))
     }
 
     /// 양쪽 보드·면지·곡면 종이를 분리해 일반 제본보다 단단한 두께를 표현합니다.
