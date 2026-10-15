@@ -68,7 +68,7 @@ struct DiaryCreationPreview: View {
     }
 
     private func standardPage(isLeft: Bool) -> some View {
-        let depth = draft.binding == .ringBinder ? 0.12 : 0.18
+        let depth = 0.12
         return PreviewPaper(pattern: draft.paper)
             .overlay {
                 LinearGradient(stops: [
@@ -189,6 +189,7 @@ struct DiaryCreationPreview: View {
         RoundedRectangle(cornerRadius: 5)
             .fill(LinearGradient(colors: [.black.opacity(0.12), .white.opacity(0.8), .black.opacity(0.17)],
                                  startPoint: .leading, endPoint: .trailing))
+            .opacity(draft.binding == .softcover ? 0.8 : 1)
             .frame(width: draft.binding == .ringBinder ? 16 : 9, height: bookHeight - 27)
             .overlay {
                 if draft.binding == .ringBinder {
