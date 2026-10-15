@@ -80,9 +80,23 @@ extension DiaryCoverTone: DiaryOption {
 }
 
 enum CreationCoverStyle: String, CaseIterable, Codable, DiaryOption {
-    case classic, botanicalWindow
-    var title: String { self == .classic ? "기본형" : "식물 창 장식" }
-    var design: DiaryCoverDesign { self == .classic ? .classic : .botanicalWindow }
+    case classic, botanicalWindow, leatherWrap, kraftPocket
+    var title: String {
+        switch self {
+        case .classic: "기본형"
+        case .botanicalWindow: "식물 창 장식"
+        case .leatherWrap: "가죽 랩"
+        case .kraftPocket: "크라프트 포켓"
+        }
+    }
+    var design: DiaryCoverDesign {
+        switch self {
+        case .classic: .classic
+        case .botanicalWindow: .botanicalWindow
+        case .leatherWrap: .leatherWrap
+        case .kraftPocket: .kraft
+        }
+    }
 }
 
 enum DiaryPaper: String, CaseIterable, Codable, DiaryOption {

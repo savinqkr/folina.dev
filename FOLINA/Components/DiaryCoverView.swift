@@ -174,7 +174,7 @@ struct DiaryCoverView: View {
 
     @ViewBuilder
     private var coverTitle: some View {
-        if isBinder {
+        if isBinder && diary.cover.design == .classic {
             VStack(alignment: .leading, spacing: 12) {
                 Text("PERSONAL JOURNAL").font(.system(size: 7, weight: .medium)).tracking(1.1)
                 Text(diary.title)
