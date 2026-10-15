@@ -1,0 +1,45 @@
+import Foundation
+
+/// 책장 표시용 값. 영구 저장 모델과 사용자 데이터 저장소를 정의하지 않습니다.
+struct DiarySummary: Identifiable {
+    let id: String
+    let title: String
+    let subtitle: String
+    let cover: DiaryCoverStyle
+}
+
+struct DiaryCoverStyle {
+    let binding: DiaryBinding
+    let tone: DiaryCoverTone
+    let design: DiaryCoverDesign
+
+    init(binding: DiaryBinding, tone: DiaryCoverTone, design: DiaryCoverDesign = .classic) {
+        self.binding = binding
+        self.tone = tone
+        self.design = design
+    }
+}
+
+enum DiaryBinding {
+    case ringBinder
+    case spiral
+    case hardcover
+    case softcover
+}
+
+enum DiaryCoverTone {
+    case sage
+    case slateBlue
+    case rose
+    case cocoa
+    case butter
+    case lavender
+    case kraft
+}
+
+enum DiaryCoverDesign {
+    case classic
+    case leatherWrap
+    case botanicalWindow
+    case kraft
+}

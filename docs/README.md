@@ -2,7 +2,7 @@
 
 - 원본/근거: [PRD](https://app.notion.com/p/3f91e7915bce8167a6aff13f6915004e) · [기능 명세](https://app.notion.com/p/3f91e7915bce81f89817c482350c29da) · [IA](https://app.notion.com/p/3f91e7915bce812b9cb6bba4345c) · [MVP 정책](https://app.notion.com/p/3f91e7915bce8177a7fcf5b86d220de7) · [상품 및 데이터 모델](https://app.notion.com/p/3f91e7915bce813085e3fe2b6ae1f8a0) · [개발 핸드오프 및 백로그](https://app.notion.com/p/3f91e7915bce81e78a27d64a54ec2f67) · [Figma](https://www.figma.com/design/FFQxwcgxtazngCK8Sp26hv/Untitled) · [FigJam](https://www.figma.com/board/xe98koWxDTV0LYXXboiROy/Untitled)
 - 확인일: 2026-10-15 (한국 시간, 외부 원본은 접근 시도일)
-- 문서 상태: 관리 규칙 확정 / 외부 원본 자료 확인 필요
+- 문서 상태: 관리 규칙 확정 / Figma 책장 홈 확인 / 나머지 원본 확인 필요
 
 ## 원본과 GitHub 문서의 역할
 
@@ -29,11 +29,11 @@ Notion·Figma·FigJam을 원본(Source of Truth)으로 유지합니다. GitHub �
 
 ## 원본 접근 결과
 
-위 원본 링크 8개에 HTTPS 접근을 시도했으나 모두 네트워크 프록시의 `Tunnel connection failed: 403 Forbidden`으로 차단되었습니다. 본문은 하나도 열람하지 못했습니다. 문서 공개 여부·계정 권한·내용·최신 버전은 판정할 수 없습니다.
+최초 문서 구축 당시 원본 링크 8개에 HTTPS 접근을 시도했으나 모두 네트워크 프록시의 `Tunnel connection failed: 403 Forbidden`으로 차단되었습니다. 당시에는 본문을 열람하지 못했습니다. 문서 공개 여부·계정 권한·내용·최신 버전은 판정할 수 없습니다.
 
 Notion IA 링크는 제공받은 주소를 그대로 기록했습니다. 유효한 문서 주소인지도 추가 확인이 필요합니다.
 
-제품·디자인 원본과 저장소 사이의 차이는 아직 비교할 수 없습니다. 미확인을 불일치나 일치로 해석하지 않습니다. 추후 차이가 발견되면 원본 위치/버전, GitHub 문서 위치, 서로 다른 내용과 영향을 보고하고 확인 전 조용히 덮어쓰지 않습니다.
+이후 연결된 Figma 도구로 페이지 `26:2`와 v5 책장 홈 `27:15`를 열람했습니다. 현재 확인 범위와 차이는 [화면 명세](design/screen-spec.md)에 기록합니다. SVG 파일 다운로드는 네트워크 403으로 차단되었습니다. 나머지 제품·디자인 원본과 저장소 사이의 차이는 아직 비교할 수 없습니다. 미확인을 불일치나 일치로 해석하지 않습니다. 추후 차이가 발견되면 원본 위치/버전, GitHub 문서 위치, 서로 다른 내용과 영향을 보고하고 확인 전 조용히 덮어쓰지 않습니다.
 
 ## 문서 지도
 
