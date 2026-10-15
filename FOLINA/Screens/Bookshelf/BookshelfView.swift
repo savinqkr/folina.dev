@@ -27,8 +27,16 @@ struct BookshelfView: View {
 
     private var appHeader: some View {
         HStack {
-            Text("▤  FOLINA")
-                .font(FolinaTheme.Typography.brand)
+            HStack(spacing: 8) {
+                Image("HeaderLogo")
+                    .renderingMode(.original)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 36, height: 36)
+                    .accessibilityHidden(true)
+                Text("FOLINA")
+                    .font(FolinaTheme.Typography.brand)
+            }
             Spacer()
             Text("LIBRARY")
                 .font(FolinaTheme.Typography.caption)
