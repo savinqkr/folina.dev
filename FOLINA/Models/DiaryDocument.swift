@@ -8,6 +8,10 @@ struct DiaryDocument: Codable, Equatable, Identifiable {
     let createdAt: Date
     let updatedAt: Date
     let pages: [DiaryPage]
+    /// nil은 책갈피 필드가 없던 기존 버전 1 문서를 의미합니다.
+    var bookmarkPageIDs: Set<UUID>? = nil
+
+    var bookmarks: Set<UUID> { bookmarkPageIDs ?? [] }
 
     static func create(from draft: DiaryDraft, now: Date = Date(),
                        timeZone: TimeZone = .current) throws -> Self {

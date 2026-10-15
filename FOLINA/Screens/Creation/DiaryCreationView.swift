@@ -26,7 +26,7 @@ struct DiaryCreationView: View {
                             }
                         }
                     }
-                    .padding(.horizontal, geometry.size.width >= 600 ? FolinaTheme.Spacing.page : 16)
+                    .padding(.horizontal, FolinaTheme.Spacing.horizontalPage(width: geometry.size.width))
                     .padding(.vertical, 24)
                 }
                 .scrollDismissesKeyboard(.interactively)

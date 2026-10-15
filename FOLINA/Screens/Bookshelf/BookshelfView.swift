@@ -13,7 +13,9 @@ struct BookshelfView: View {
                     if geometry.size.width >= 600 {
                         BookshelfSidebar(isExpanded: $isSidebarExpanded)
                     }
-                    bookshelf
+                    GeometryReader { contentGeometry in
+                        bookshelf(width: contentGeometry.size.width)
+                    }
                 }
             }
         }
@@ -21,7 +23,7 @@ struct BookshelfView: View {
         .preferredColorScheme(.light)
     }
 
-    private var bookshelf: some View {
+    private func bookshelf(width: CGFloat) -> some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 40) {
                 ViewThatFits(in: .horizontal) {
@@ -68,19 +70,9 @@ struct BookshelfView: View {
                 .background(FolinaTheme.Palette.collection,
                             in: RoundedRectangle(cornerRadius: 15))
 
-                DisclosureGroup("표지 샘플 보기 · 저장되지 않는 예시") {
-                    LazyVGrid(columns: [GridItem(.adaptive(minimum: 200), spacing: 24)], spacing: 36) {
-                        ForEach(SampleDiaries.bookshelf) { diary in
-                            DiaryCard(diary: diary, isSample: true)
-                        }
-                    }
-                    .padding(.top, 20)
-                }
-                .accessibilityIdentifier("sample-gallery")
             }
-            .padding(.horizontal, FolinaTheme.Spacing.page)
+            .padding(.horizontal, FolinaTheme.Spacing.horizontalPage(width: width))
             .padding(.vertical, 36)
-            .frame(maxWidth: 1200, alignment: .leading)
             .frame(maxWidth: .infinity)
         }
         .accessibilityIdentifier("bookshelf-home")

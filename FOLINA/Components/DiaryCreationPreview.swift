@@ -69,7 +69,7 @@ struct DiaryCreationPreview: View {
                     }
                     .offset(y: CGFloat(3 - index) * 1.3)
             }
-            PreviewPaper(pattern: draft.paper)
+            DiaryPaperSurface(pattern: draft.paper)
                 .overlay {
                     LinearGradient(stops: [
                         .init(color: .clear, location: 0),
@@ -172,7 +172,7 @@ struct DiaryCreationPreview: View {
                     }
                     .offset(x: isLeft ? -0.4 : 0.4, y: CGFloat(5 - index) * 1.5)
             }
-            PreviewPaper(pattern: draft.paper)
+            DiaryPaperSurface(pattern: draft.paper)
                 .overlay {
                     LinearGradient(stops: [
                         .init(color: .clear, location: 0),
@@ -204,7 +204,8 @@ struct DiaryCreationPreview: View {
     }
 }
 
-private struct PreviewPaper: View {
+/// 생성 미리보기와 읽기 화면에서 공유하는 속지 무늬.
+struct DiaryPaperSurface: View {
     let pattern: DiaryPaper
 
     var body: some View {

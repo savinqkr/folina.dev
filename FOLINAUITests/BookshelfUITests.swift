@@ -62,6 +62,54 @@ final class BookshelfUITests: XCTestCase {
     }
 
     @MainActor
+    func testReaderBookmarkContentsRotationAndRelaunch() {
+        let app = XCUIApplication()
+        let title = "읽기 검증 " + UUID().uuidString
+        XCUIDevice.shared.orientation = .portrait
+        defer { XCUIDevice.shared.orientation = .portrait }
+        app.launch()
+        waitForLibrary(in: app)
+        app.buttons["create-diary"].tap()
+        let name = app.textFields["diary-name"]
+        XCTAssertTrue(name.waitForExistence(timeout: 3))
+        name.tap()
+        name.typeText(title + "\n")
+        tap("creation-submit", in: app)
+        waitForLibrary(in: app)
+        let card = app.buttons.matching(NSPredicate(format: "label CONTAINS %@", title)).firstMatch
+        XCTAssertTrue(card.waitForExistence(timeout: 5))
+        card.tap()
+        let page = app.buttons["reading-page-1"]
+        XCTAssertTrue(page.waitForExistence(timeout: 3))
+        XCTAssertFalse(app.buttons["reading-previous"].isEnabled)
+        XCTAssertFalse(app.buttons["reading-next"].isEnabled)
+        app.buttons["reading-toggle-bookmark"].tap()
+        let bookmarked = NSPredicate(format: "label CONTAINS %@", "해제")
+        expectation(for: bookmarked, evaluatedWith: app.buttons["reading-toggle-bookmark"])
+        waitForExpectations(timeout: 5)
+        app.buttons["reading-contents"].tap()
+        XCTAssertTrue(app.buttons["reading-jump-1"].waitForExistence(timeout: 3))
+        app.buttons["reading-jump-1"].tap()
+        XCUIDevice.shared.orientation = .landscapeLeft
+        XCTAssertTrue(page.waitForExistence(timeout: 3))
+        XCTAssertEqual(app.staticTexts["reading-position"].label, "1 / 1페이지")
+        app.buttons["close-reader"].tap()
+        app.terminate()
+        app.launch()
+        waitForLibrary(in: app)
+        XCTAssertTrue(card.waitForExistence(timeout: 5))
+        card.tap()
+        XCTAssertTrue(app.buttons["reading-bookmarks"].waitForExistence(timeout: 3))
+        app.buttons["reading-bookmarks"].tap()
+        XCTAssertTrue(app.buttons["reading-jump-1"].waitForExistence(timeout: 3))
+        app.buttons["reading-jump-1"].tap()
+        app.buttons["reading-toggle-bookmark"].tap()
+        let removed = NSPredicate(format: "label CONTAINS %@", "추가")
+        expectation(for: removed, evaluatedWith: app.buttons["reading-toggle-bookmark"])
+        waitForExpectations(timeout: 5)
+    }
+
+    @MainActor
     func testPortraitAndLandscapeNavigation() {
         let app = XCUIApplication()
         XCUIDevice.shared.orientation = .portrait
