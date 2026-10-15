@@ -94,8 +94,12 @@ struct DiaryCoverDecoration: View {
                 .rotationEffect(.degrees(-11))
                 .offset(x: 66, y: 70)
             RoundedRectangle(cornerRadius: 2)
-                .fill(LinearGradient(colors: [FolinaTheme.Palette.kraft, color.opacity(0.8)],
-                                     startPoint: .topLeading, endPoint: .bottomTrailing))
+                .fill(color)
+                .overlay {
+                    RoundedRectangle(cornerRadius: 2)
+                        .fill(LinearGradient(colors: [.white.opacity(0.18), .clear, .black.opacity(0.1)],
+                                             startPoint: .topLeading, endPoint: .bottomTrailing))
+                }
                 .frame(width: 126, height: 90)
                 .overlay {
                     RoundedRectangle(cornerRadius: 2)
