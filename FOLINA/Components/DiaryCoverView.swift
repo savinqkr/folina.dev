@@ -97,7 +97,7 @@ struct DiaryCoverView: View {
                     .init(color: .black.opacity(0.07), location: 0.19),
                     .init(color: .clear, location: 0.26),
                     .init(color: .white.opacity(0.12), location: 0.66),
-                    .init(color: .black.opacity(0.12), location: 1)
+                    .init(color: .black.opacity(0.07), location: 1)
                 ], startPoint: .leading, endPoint: .trailing)
             }
             .overlay { CoverMaterial(isCloth: isHardcover && diary.cover.design != .leatherWrap) }
@@ -105,7 +105,7 @@ struct DiaryCoverView: View {
             .overlay {
                 RoundedRectangle(cornerRadius: corner)
                     .strokeBorder(LinearGradient(colors: [.white.opacity(0.65), .clear,
-                                                          .black.opacity(0.18)],
+                                                          .black.opacity(0.12)],
                                                  startPoint: .topLeading, endPoint: .bottomTrailing),
                                   lineWidth: 1)
             }
