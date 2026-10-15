@@ -2,6 +2,7 @@ import SwiftUI
 
 /// 선택 표시·접근성·식별자를 공유하는 재사용 옵션 그룹.
 struct DiaryOptionPicker<Option: DiaryOption, Content: View>: View {
+    @ScaledMetric(relativeTo: .subheadline) private var minimumOptionWidth = 115
     let title: String
     let options: [Option]
     @Binding var selection: Option
@@ -12,17 +13,19 @@ struct DiaryOptionPicker<Option: DiaryOption, Content: View>: View {
         VStack(alignment: .leading, spacing: 12) {
             Text(title).font(FolinaTheme.Typography.label)
                 .accessibilityAddTraits(.isHeader)
-            LazyVGrid(columns: [GridItem(.adaptive(minimum: 115), spacing: 8)], spacing: 8) {
+            LazyVGrid(columns: [GridItem(.adaptive(minimum: minimumOptionWidth), spacing: 8)], spacing: 8) {
                 ForEach(options) { option in
                     Button {
                         selection = option
                     } label: {
                         HStack(spacing: 5) {
                             label(option)
-                            Spacer(minLength: 0)
-                            if selection == option {
-                                Image(systemName: "checkmark").font(.caption.weight(.semibold))
-                            }
+                                .lineLimit(2, reservesSpace: true)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                            Image(systemName: "checkmark")
+                                .font(.caption.weight(.semibold))
+                                .opacity(selection == option ? 1 : 0)
+                                .accessibilityHidden(true)
                         }
                         .font(FolinaTheme.Typography.body)
                         .padding(12)
