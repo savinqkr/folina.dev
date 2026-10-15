@@ -7,9 +7,9 @@ final class BookshelfUITests: XCTestCase {
         XCUIDevice.shared.orientation = .landscapeLeft
         defer { XCUIDevice.shared.orientation = .portrait }
         app.launch()
+        waitForLibrary(in: app)
         let create = app.buttons["create-diary"]
         XCTAssertTrue(create.waitForExistence(timeout: 5))
-        XCTAssertTrue(app.descendants(matching: .any)["sample-seasons"].firstMatch.exists)
         create.tap()
         XCTAssertTrue(app.buttons["creation-back"].waitForExistence(timeout: 3))
 
@@ -29,16 +29,36 @@ final class BookshelfUITests: XCTestCase {
         for text in ["여행 일기", "자유 스크랩북", "하드커버 노트", "라벤더", "식물 창 장식", "도트", "가로"] {
             XCTAssertTrue(value.contains(text), "미리보기 선택 누락: \(text)")
         }
-        tap("creation-submit", in: app)
-        let notice = app.alerts["저장 기능 준비 중"]
-        XCTAssertTrue(notice.waitForExistence(timeout: 3))
-        XCTAssertTrue(notice.staticTexts["현재는 미리보기만 제공해요. 다이어리는 생성되거나 저장되지 않으며 책장에 추가되지 않아요."].exists)
-        notice.buttons["계속 꾸미기"].tap()
         tap("creation-back", in: app)
         XCTAssertTrue(create.waitForExistence(timeout: 3))
-        XCTAssertFalse(app.staticTexts["여행 일기"].exists)
+        XCTAssertFalse(app.descendants(matching: .any)["diary-creation"].firstMatch.exists)
         create.tap()
         XCTAssertEqual(app.textFields["diary-name"].value as? String, "나의 다이어리")
+    }
+
+    @MainActor
+    func testCreationPersistsAfterRelaunchAndOpensDetails() {
+        let app = XCUIApplication()
+        let title = "저장 검증 " + UUID().uuidString
+        app.launch()
+        waitForLibrary(in: app)
+        let create = app.buttons["create-diary"]
+        XCTAssertTrue(create.waitForExistence(timeout: 10))
+        create.tap()
+        let name = app.textFields["diary-name"]
+        XCTAssertTrue(name.waitForExistence(timeout: 3))
+        name.tap()
+        name.typeText(title + "\n")
+        tap("creation-submit", in: app)
+        XCTAssertTrue(create.waitForExistence(timeout: 10))
+        app.terminate()
+        app.launch()
+        waitForLibrary(in: app)
+        let card = app.buttons.matching(NSPredicate(format: "label CONTAINS %@", title)).firstMatch
+        XCTAssertTrue(card.waitForExistence(timeout: 10))
+        card.tap()
+        XCTAssertTrue(app.descendants(matching: .any)["diary-detail"].firstMatch.waitForExistence(timeout: 3))
+        XCTAssertTrue(app.staticTexts[title].exists)
     }
 
     @MainActor
@@ -46,6 +66,7 @@ final class BookshelfUITests: XCTestCase {
         let app = XCUIApplication()
         XCUIDevice.shared.orientation = .portrait
         app.launch()
+        waitForLibrary(in: app)
         app.buttons["create-diary"].tap()
         XCTAssertTrue(app.buttons["creation-back"].waitForExistence(timeout: 3))
         XCUIDevice.shared.orientation = .landscapeLeft
@@ -61,6 +82,7 @@ final class BookshelfUITests: XCTestCase {
         XCUIDevice.shared.orientation = .landscapeLeft
         defer { XCUIDevice.shared.orientation = .portrait }
         app.launch()
+        waitForLibrary(in: app)
         let toggle = app.buttons["sidebar-toggle"]
         XCTAssertTrue(toggle.waitForExistence(timeout: 5))
         let diaries = app.buttons["sidebar-diaries"]
@@ -78,6 +100,15 @@ final class BookshelfUITests: XCTestCase {
         XCTAssertEqual(toggle.value as? String, "펼쳐짐")
         XCTAssertEqual(diaries.frame.width, expandedWidth, accuracy: 1)
         XCTAssertTrue(app.buttons["create-diary"].exists)
+    }
+
+    @MainActor
+    private func waitForLibrary(in app: XCUIApplication) {
+        let create = app.buttons["create-diary"]
+        XCTAssertTrue(create.waitForExistence(timeout: 10))
+        let ready = NSPredicate(format: "enabled == true")
+        expectation(for: ready, evaluatedWith: create)
+        waitForExpectations(timeout: 10)
     }
 
     @MainActor

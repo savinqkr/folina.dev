@@ -3,7 +3,8 @@ import SwiftUI
 struct DiaryCreationView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var draft = DiaryDraft()
-    @State private var showsStorageNotice = false
+    @Environment(DiaryLibrary.self) private var library
+    @State private var creation = DiaryCreationController()
     @FocusState private var isNameFocused: Bool
 
     var body: some View {
@@ -36,10 +37,13 @@ struct DiaryCreationView: View {
         .preferredColorScheme(.light)
         .toolbar(.hidden, for: .navigationBar)
         .accessibilityIdentifier("diary-creation")
-        .alert("저장 기능 준비 중", isPresented: $showsStorageNotice) {
-            Button("계속 꾸미기", role: .cancel) { }
+        .disabled(creation.isSaving || creation.hasCreated)
+        .alert("생성 실패", isPresented: Binding(
+            get: { creation.errorMessage != nil },
+            set: { if !$0 { creation.errorMessage = nil } })) {
+            Button("확인", role: .cancel) { creation.errorMessage = nil }
         } message: {
-            Text("현재는 미리보기만 제공해요. 다이어리는 생성되거나 저장되지 않으며 책장에 추가되지 않아요.")
+            Text(creation.errorMessage ?? "")
         }
     }
 
@@ -135,12 +139,15 @@ struct DiaryCreationView: View {
                 .font(FolinaTheme.Typography.caption)
                 .foregroundStyle(FolinaTheme.Palette.secondary)
             Divider()
-            Text("지금은 미리보기 단계예요. 저장하거나 책장에 추가하지 않아요. 뒤로 가면 선택 내용은 초기화돼요.")
+            Text("A4 크기의 첫 페이지 1개를 만들고 이 기기에 저장해요. 날짜형은 오늘 날짜로 시작해요.")
                 .font(FolinaTheme.Typography.body)
                 .fixedSize(horizontal: false, vertical: true)
-            Button("다이어리 만들기") {
-                showsStorageNotice = true
+            Button(creation.isSaving ? "저장 중…" : "다이어리 만들기") {
+                Task { @MainActor in
+                    if await creation.create(draft: draft, library: library) { dismiss() }
+                }
             }
+            .disabled(!library.isReady || creation.isSaving || creation.hasCreated)
             .buttonStyle(FolinaPrimaryButtonStyle())
             .accessibilityIdentifier("creation-submit")
             .frame(maxWidth: .infinity, alignment: .trailing)
@@ -152,7 +159,7 @@ struct DiaryCreationView: View {
 }
 
 #Preview("새 다이어리 만들기") {
-    NavigationStack { DiaryCreationView() }
+    NavigationStack { DiaryCreationView() }.environment(DiaryLibrary())
 }
 
 /// 두 패널의 자연스러운 높이를 측정해 긴 쪽에 맞춰 같은 높이를 제안합니다.

@@ -38,23 +38,12 @@ struct DiaryCreationPreview: View {
                         .strokeBorder(.white.opacity(0.4), lineWidth: 1)
                 }
                 .shadow(color: FolinaTheme.Palette.ink.opacity(0.22), radius: 12, x: 2, y: 14)
-            RoundedRectangle(cornerRadius: 5)
-                .fill(FolinaTheme.Palette.paperEdge)
-                .frame(width: 495, height: bookHeight - 25)
-                .offset(y: 9)
-                .overlay(alignment: .bottom) {
-                    ForEach(0..<4) { index in
-                        Rectangle().fill(.black.opacity(0.07))
-                            .frame(width: 488, height: 0.5)
-                            .offset(y: CGFloat(index) * -2 + 8)
-                    }
-                }
             HStack(spacing: 10) {
                 standardPage(isLeft: true)
                 standardPage(isLeft: false)
             }
-            .frame(width: 495, height: bookHeight - 25)
-            .offset(y: -4)
+            .frame(width: 495, height: bookHeight - 38)
+            .offset(y: -5)
             gutter
             if draft.binding == .ringBinder {
                 VStack(spacing: 0) {
@@ -68,19 +57,32 @@ struct DiaryCreationPreview: View {
     }
 
     private func standardPage(isLeft: Bool) -> some View {
-        let depth = draft.binding == .ringBinder ? 0.12 : 0.18
-        return PreviewPaper(pattern: draft.paper)
-            .overlay {
-                LinearGradient(stops: [
-                    .init(color: .clear, location: 0),
-                    .init(color: .clear, location: 0.55),
-                    .init(color: .white.opacity(0.18), location: 0.73),
-                    .init(color: .black.opacity(depth * 0.2), location: 0.88),
-                    .init(color: .black.opacity(depth), location: 1)
-                ], startPoint: isLeft ? .leading : .trailing,
-                   endPoint: isLeft ? .trailing : .leading)
+        let depth = 0.12
+        return ZStack {
+            // 종이 묶음도 면지와 같은 곡선을 따라 얇게 쌓입니다.
+            ForEach(0..<3) { index in
+                StandardPageShape(isLeft: isLeft)
+                    .fill(FolinaTheme.Palette.paperEdge)
+                    .overlay {
+                        StandardPageShape(isLeft: isLeft)
+                            .stroke(.black.opacity(0.045), lineWidth: 0.5)
+                    }
+                    .offset(y: CGFloat(3 - index) * 1.3)
             }
-            .clipShape(RoundedRectangle(cornerRadius: 4))
+            PreviewPaper(pattern: draft.paper)
+                .overlay {
+                    LinearGradient(stops: [
+                        .init(color: .clear, location: 0),
+                        .init(color: .clear, location: 0.55),
+                        .init(color: .white.opacity(0.18), location: 0.73),
+                        .init(color: .black.opacity(depth * 0.2), location: 0.88),
+                        .init(color: .black.opacity(depth), location: 1)
+                    ], startPoint: isLeft ? .leading : .trailing,
+                       endPoint: isLeft ? .trailing : .leading)
+                }
+                .clipShape(StandardPageShape(isLeft: isLeft))
+        }
+        .shadow(color: .black.opacity(0.07), radius: 1.5, y: 2)
     }
 
     /// 양쪽 보드·면지·곡면 종이를 분리해 일반 제본보다 단단한 두께를 표현합니다.
@@ -189,7 +191,9 @@ struct DiaryCreationPreview: View {
         RoundedRectangle(cornerRadius: 5)
             .fill(LinearGradient(colors: [.black.opacity(0.12), .white.opacity(0.8), .black.opacity(0.17)],
                                  startPoint: .leading, endPoint: .trailing))
-            .frame(width: draft.binding == .ringBinder ? 16 : 9, height: bookHeight - 27)
+            .opacity(draft.binding == .softcover ? 0.8 : 1)
+            .frame(width: draft.binding == .ringBinder ? 16 : 9, height: bookHeight - 40)
+            .offset(y: -3)
             .overlay {
                 if draft.binding == .ringBinder {
                     RoundedRectangle(cornerRadius: 3)
@@ -237,6 +241,29 @@ private struct PreviewPaper: View {
                 .clipShape(RoundedRectangle(cornerRadius: 4))
             }
             .shadow(color: .black.opacity(0.06), radius: 1, y: 1)
+    }
+}
+
+/// 링·일반 제본의 얕은 종이 휨. 좌우를 대칭으로 그립니다.
+private struct StandardPageShape: Shape {
+    let isLeft: Bool
+
+    func path(in rect: CGRect) -> Path {
+        let w = rect.width
+        let h = rect.height
+        var path = Path()
+        path.move(to: CGPoint(x: 0, y: 4))
+        path.addQuadCurve(to: CGPoint(x: 4, y: 0), control: .zero)
+        path.addCurve(to: CGPoint(x: w, y: 4),
+                      control1: CGPoint(x: w * 0.55, y: 0),
+                      control2: CGPoint(x: w - 14, y: 1))
+        path.addLine(to: CGPoint(x: w, y: h - 2))
+        path.addCurve(to: CGPoint(x: 4, y: h),
+                      control1: CGPoint(x: w - 18, y: h - 6),
+                      control2: CGPoint(x: w * 0.5, y: h))
+        path.addQuadCurve(to: CGPoint(x: 0, y: h - 4), control: CGPoint(x: 0, y: h))
+        path.closeSubpath()
+        return isLeft ? path : path.applying(CGAffineTransform(a: -1, b: 0, c: 0, d: 1, tx: w, ty: 0))
     }
 }
 

@@ -2,6 +2,7 @@ import SwiftUI
 
 struct DiaryCard: View {
     let diary: DiarySummary
+    var isSample = false
 
     var body: some View {
         VStack(alignment: .center, spacing: FolinaTheme.Spacing.small) {
@@ -21,7 +22,7 @@ struct DiaryCard: View {
         .multilineTextAlignment(.center)
         .frame(maxWidth: .infinity, alignment: .leading)
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel("\(diary.title), \(diary.subtitle), 샘플 다이어리")
+        .accessibilityLabel("\(diary.title), \(diary.subtitle), \(isSample ? "샘플 다이어리" : "내 다이어리")")
         .accessibilityIdentifier(diary.id)
     }
 }

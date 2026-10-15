@@ -26,23 +26,28 @@ struct DiaryCoverDecoration: View {
                 .frame(width: 164, height: 250)
                 .offset(x: 8, y: 9)
             RoundedRectangle(cornerRadius: 9)
-                .fill(LinearGradient(colors: [color, color, .black.opacity(0.25)],
-                                     startPoint: .top, endPoint: .bottom))
+                .fill(color)
+                .overlay {
+                    RoundedRectangle(cornerRadius: 9)
+                        .fill(LinearGradient(colors: [.clear, .clear, .black.opacity(0.12)],
+                                             startPoint: .top, endPoint: .bottom))
+                }
                 .frame(width: 66, height: 54)
                 .overlay {
                     RoundedRectangle(cornerRadius: 6)
                         .strokeBorder(.white.opacity(0.35), style: StrokeStyle(lineWidth: 0.7, dash: [2, 3]))
                         .padding(5)
                 }
-                .shadow(color: .black.opacity(0.26), radius: 2, x: -1, y: 3)
+                .shadow(color: .black.opacity(0.16), radius: 2, x: -1, y: 3)
                 .offset(x: 119, y: 107)
             Circle()
                 .fill(LinearGradient(colors: [Color(white: 0.85), FolinaTheme.Palette.kraft,
                                               FolinaTheme.Palette.cocoa],
                                      startPoint: .topLeading, endPoint: .bottomTrailing))
-                .overlay { Circle().strokeBorder(.white.opacity(0.6), lineWidth: 0.7) }
+                .overlay { Circle().fill(.white.opacity(0.12)) }
+                .overlay { Circle().strokeBorder(.white.opacity(0.45), lineWidth: 0.7) }
                 .frame(width: 13, height: 13)
-                .shadow(color: .black.opacity(0.25), radius: 1, y: 1)
+                .shadow(color: .black.opacity(0.15), radius: 1, y: 1)
                 .offset(x: 133, y: 127)
         }
         .frame(width: 188, height: 269, alignment: .topLeading)

@@ -2,26 +2,31 @@
 
 - 원본/근거: 사용자 요청 및 저장소 직접 확인
 - 확인일: 2026-10-15 (한국 시간, 외부 원본은 접근 시도일)
-- 문서 상태: 책장 홈 구조 작성 / Mac 빌드 검증 필요
+- 문서 상태: 3차 로컬 저장 구조 작성 / Mac 빌드 검증 필요
 
 ## 확인된 현재 구현
 
-문서 구축 PR #1이 병합된 `main` 커밋 `7fd35f2`에서 책장 홈 개발을 시작했습니다. 아래 파일은 이번 기능 브랜치의 구현입니다.
+3차 개발은 2차 PR #3이 병합된 main `d6cad22`에서 시작했습니다.
 
 ```text
 FOLINA/
-├── FOLINAApp.swift                # 앱 시작
-├── ContentView.swift              # 책장 조립 및 샘플 주입
-├── Screens/Bookshelf/BookshelfView.swift
-├── Components/DiaryCard.swift
-├── Components/DiaryCoverDecoration.swift # 추가 표지 장식
-├── Components/DiaryCoverView.swift
-├── DesignSystem/FolinaTheme.swift
-├── Models/DiarySummary.swift       # 책장 표시용 값
-└── SampleData/SampleDiaries.swift  # 저장하지 않는 샘플
+├── ContentView.swift                      # 라이브러리 생성·주입·시작 시 로딩
+├── Models/DiaryDraft.swift                # 기존 화면 입력과 옵션
+├── Models/DiaryDocument.swift             # 문서·페이지 영구 데이터 값
+├── Models/DiarySummary.swift              # 책장 표시용 투영
+├── Persistence/DiaryRepository.swift      # SwiftData 저장 어댑터
+├── Persistence/DiaryLibrary.swift         # 목록·로딩·생성 상태와 오류
+├── Screens/Bookshelf/BookshelfView.swift   # 실제 목록과 별도 샘플 영역
+├── Screens/Creation/DiaryCreationView.swift
+├── Screens/Diary/DiaryDetailView.swift     # 저장 정보 진입점
+└── SampleData/SampleDiaries.swift         # 시연 전용, 저장하지 않음
 ```
 
-책장 화면은 주입받은 목록을 표시합니다. 표지의 제본·색상·장식 디자인 종류를 분리하여 다른 외형을 추가할 수 있게 구성했습니다. 영구 저장 모델·저장소는 없습니다. 2차 개발에서 생성 옵션 화면과 화면 내 초안 모델을 추가했습니다.
+`ContentView`가 `DiaryLibrary`를 환경에 주입합니다. 시작 시 저장소를 열고 읽으며 실패 시 재시도를 제공합니다. 생성 컨트롤러는 중복 요청을 막고 저장소의 명시적 저장이 성공한 뒤에만 목록을 갱신합니다. 생성 화면은 성공 반환 후 dismiss하여 책장으로 복귀합니다. 빈 이름·실패 시 입력과 화면을 유지합니다. 저장 중에는 옵션·뒤로 가기·최종 버튼을 비활성화합니다.
+
+저장 작업은 MainActor에서 직렬화되며 async 인터페이스로 View와 분리했습니다. 현재 작은 초기 문서의 SwiftData 작업 자체는 동기식입니다. 대용량 편집 저장 시 별도 ModelActor 등 실행 위치를 재검토해야 합니다. 앱 강제 종료 전 저장 성공하지 않은 입력은 저장 보장 대상이 아닙니다.
+
+SwiftData 컨테이너와 전용 context는 저장 어댑터가 유지합니다. 오류 시 fallback 메모리 저장소를 만들지 않습니다. [데이터 모델](data-model.md), [기술 결정](decisions.md)을 참고합니다.
 
 폴더는 기존 Xcode의 `PBXFileSystemSynchronizedRootGroup` 아래에 있어 소스 목록을 수동 편집하지 않습니다. 기존 테스트 타깃과 프로젝트 설정을 유지합니다.
 
@@ -49,9 +54,9 @@ FOLINA/
 
 ## 미결정 사항
 
-목표 아키텍처 패턴, 상태 관리, 저장 방식, 동기화 여부는 확정하지 않았습니다. 원본 요구사항을 확인한 뒤 대안을 검토하고 중요한 결정은 [기술 결정](decisions.md)에 기록합니다.
+필기·미디어 저장, 백업 포맷과 클라우드 동기화는 후속 설계 대상입니다. 이번 단계에서는 SwiftData 로컬 저장만 구현합니다.
 
-## 2차 개발 — 생성 옵션 화면
+## 2차 개발 — 생성 옵션 화면 (당시 구현 기록)
 
 - `ContentView`의 `NavigationStack`에서 책장 → `DiaryCreationView`로 이동합니다. 뒤로 가면 생성 화면의 `@State` 초안은 해제됩니다.
 - `Models/DiaryDraft.swift`의 값 타입에 이름·기록 방식·제본·색상·표지 스타일·속지·방향을 보관합니다. 저장 스키마를 확정하지 않고 향후 저장 계층에 전달할 수 있는 값으로 분리했습니다.
