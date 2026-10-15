@@ -2,12 +2,11 @@ import SwiftUI
 
 struct BookshelfView: View {
     let diaries: [DiarySummary]
-    @State private var showsCreationNotice = false
 
     var body: some View {
         GeometryReader { geometry in
             VStack(spacing: 0) {
-                appHeader
+                FolinaHeader(section: "LIBRARY")
                 HStack(spacing: 0) {
                     if geometry.size.width >= 900 {
                         sidebar
@@ -18,37 +17,6 @@ struct BookshelfView: View {
         }
         .background(FolinaTheme.Palette.canvas)
         .preferredColorScheme(.light)
-        .alert("새 다이어리 만들기", isPresented: $showsCreationNotice) {
-            Button("확인", role: .cancel) { }
-        } message: {
-            Text("다이어리 생성 기능은 준비 중이에요.")
-        }
-    }
-
-    private var appHeader: some View {
-        HStack {
-            HStack(spacing: 8) {
-                Image("HeaderLogo")
-                    .renderingMode(.original)
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 36, height: 36)
-                    .accessibilityHidden(true)
-                Text("FOLINA")
-                    .font(FolinaTheme.Typography.brand)
-            }
-            Spacer()
-            Text("LIBRARY")
-                .font(FolinaTheme.Typography.caption)
-                .foregroundStyle(FolinaTheme.Palette.secondary)
-        }
-        .foregroundStyle(FolinaTheme.Palette.ink)
-        .padding(.horizontal, 28)
-        .frame(minHeight: 64)
-        .background(FolinaTheme.Palette.surface)
-        .overlay(alignment: .bottom) {
-            Rectangle().fill(FolinaTheme.Palette.border).frame(height: 1)
-        }
     }
 
     private var sidebar: some View {
@@ -129,8 +97,10 @@ struct BookshelfView: View {
     }
 
     private var createButton: some View {
-        Button("+ 새 다이어리 만들기") {
-            showsCreationNotice = true
+        NavigationLink {
+            DiaryCreationView()
+        } label: {
+            Text("+ 새 다이어리 만들기")
         }
         .buttonStyle(FolinaPrimaryButtonStyle())
         .fixedSize()

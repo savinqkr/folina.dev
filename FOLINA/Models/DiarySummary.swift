@@ -20,14 +20,14 @@ struct DiaryCoverStyle {
     }
 }
 
-enum DiaryBinding {
+enum DiaryBinding: String, Codable, CaseIterable {
     case ringBinder
     case spiral
     case hardcover
     case softcover
 }
 
-enum DiaryCoverTone {
+enum DiaryCoverTone: String, Codable, CaseIterable {
     case sage
     case slateBlue
     case rose
@@ -37,7 +37,7 @@ enum DiaryCoverTone {
     case kraft
 }
 
-enum DiaryCoverDesign {
+enum DiaryCoverDesign: String, Codable {
     case classic
     case leatherWrap
     case botanicalWindow
