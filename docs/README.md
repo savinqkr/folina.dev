@@ -70,3 +70,7 @@ Notion IA 링크는 제공받은 주소를 그대로 기록했습니다. 유효�
 연결된 Notion 도구로 기능 명세·MVP 정책·상품 및 데이터 모델을 열람했습니다. 관련 확인 내용과 범위 차이는 [제품 정책](product/policies.md) 및 [데이터 모델](architecture/data-model.md)에 반영했습니다. 이전 프록시 차단 기록은 당시 결과이며 현재 접근 불가를 의미하지 않습니다. 모든 원본을 확인한 것은 아닙니다.
 
 실제 로컬 생성·책장 연결 및 오류 처리는 구현했으며 [Mac 검증 절차](development/local-storage-verification.md)를 따릅니다. Linux에서 앱 실행 결과는 확인하지 못했습니다.
+
+## 4차 개발 — 읽기 및 페이지 탐색
+
+Figma v5 읽기 27:125를 2026-10-16에 열람했습니다. 원본 에셋 다운로드 403과 구현 차이는 [읽기 명세](design/reading-spec.md)에, 수동/자동 검증 상태는 [읽기 검증](development/reading-verification.md)에 기록합니다. 기존 저장 모델의 선택적 책갈피 확장은 [데이터 모델](architecture/data-model.md)을 참고합니다.

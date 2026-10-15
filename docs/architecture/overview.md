@@ -64,3 +64,9 @@ SwiftData 컨테이너와 전용 context는 저장 어댑터가 유지합니다.
 - `DiaryCreationPreview`는 같은 초안을 읽어 펼친 속지를 그립니다. `DiaryCoverView`는 초안의 표시용 투영을 받아 표지 스타일을 표시합니다.
 - `FolinaHeader`, `MetalBinderRing`, `DiaryCoverTone+Color`는 책장·생성 화면에서 공유합니다. 기존 샘플과 제본 스타일을 유지합니다.
 - 세부 동작·디자인 차이·Mac 검증 절차는 [생성 화면 명세](../design/creation-spec.md)를 참조합니다.
+
+## 4차 개발 — 읽기 구조
+
+DiaryDetailView를 읽기 화면으로 확장했습니다. Models/DiaryReadingPosition.swift는 UUID 선택·펼침·경계 계산, Components/DiaryReadingBook.swift는 종이·표지·제본 외형을 담당합니다. DiaryRepository/DiaryLibrary에 책갈피 트랜잭션을 추가했습니다. 기존 Xcode 동기화 폴더와 테스트 타깃을 그대로 사용합니다.
+
+상세 내용은 [읽기 명세](../design/reading-spec.md)와 [읽기 검증](../development/reading-verification.md)을 참고합니다.

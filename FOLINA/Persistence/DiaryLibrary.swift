@@ -31,6 +31,15 @@ final class DiaryLibrary {
         }
     }
 
+    func setBookmark(diaryID: UUID, pageID: UUID, isBookmarked: Bool) async throws {
+        guard isReady, let repository else { throw DiaryStorageError.unavailable }
+        let saved = try await repository.setBookmark(diaryID: diaryID, pageID: pageID,
+                                                       isBookmarked: isBookmarked)
+        if let index = documents.firstIndex(where: { $0.id == diaryID }) {
+            documents[index] = saved
+        }
+    }
+
     func insert(_ document: DiaryDocument) async throws {
         guard isReady, let repository else { throw DiaryStorageError.unavailable }
         try await repository.insert(document)

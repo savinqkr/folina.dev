@@ -166,6 +166,25 @@ struct DiaryStorageTests {
         #expect(library.loadError == nil)
     }
 
+    @Test func bookmarkFailurePreservesPublishedDataAndRetryWorks() async throws {
+        let repository = TestDiaryRepository()
+        let library = DiaryLibrary { repository }
+        await library.load()
+        var draft = DiaryDraft()
+        draft.name = "책갈피 오류"
+        let document = try DiaryDocument.create(from: draft)
+        try await library.insert(document)
+        repository.failSave = true
+        do {
+            try await library.setBookmark(diaryID: document.id, pageID: document.pages[0].id, isBookmarked: true)
+            Issue.record("저장 실패가 성공으로 처리됨")
+        } catch { }
+        #expect(library.documents[0].bookmarks.isEmpty)
+        repository.failSave = false
+        try await library.setBookmark(diaryID: document.id, pageID: document.pages[0].id, isBookmarked: true)
+        #expect(library.documents[0].bookmarks == [document.pages[0].id])
+    }
+
     @Test func damagedOrFuturePayloadIsPreserved() async throws {
         let configuration = ModelConfiguration(isStoredInMemoryOnly: true, cloudKitDatabase: .none)
         let container = try ModelContainer(for: StoredDiary.self, configurations: configuration)
@@ -205,6 +224,17 @@ private final class TestDiaryRepository: DiaryRepository {
     func load() async throws -> [DiaryDocument] {
         if failLoad { throw Failure.simulated }
         return documents
+    }
+
+    func setBookmark(diaryID: UUID, pageID: UUID, isBookmarked: Bool) async throws -> DiaryDocument {
+        if failSave { throw Failure.simulated }
+        guard let index = documents.firstIndex(where: { $0.id == diaryID }) else {
+            throw DiaryStorageError.unavailable
+        }
+        var bookmarks = documents[index].bookmarks
+        if isBookmarked { bookmarks.insert(pageID) } else { bookmarks.remove(pageID) }
+        documents[index].bookmarkPageIDs = bookmarks
+        return documents[index]
     }
 
     func insert(_ document: DiaryDocument) async throws {

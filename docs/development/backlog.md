@@ -36,3 +36,9 @@ Mac에서 앱 빌드·UI 테스트·가로/세로·좁은 창·큰 글자 및 Fi
 - [ ] 원본 링 에셋 다운로드 접근 복구 후 현재 SwiftUI 링과 시각 비교
 
 이번 범위의 이름·유형·제본·표지·속지·방향 선택 및 미리보기는 [생성 명세](../design/creation-spec.md)에 기록합니다.
+
+## 4차 개발 후속 검증
+
+Mac 빌드·전체 단위/UI 테스트, 여러 페이지 펼침·회전·연속 스와이프의 수동 시각 검증, Figma 링 SVG 다운로드 복구 및 시각 비교가 남아 있습니다. Folina 프로젝트 목록 조회는 GitHub 통합 권한 오류로 실패했습니다.
+
+상세 내용은 [읽기 명세](../design/reading-spec.md)와 [읽기 검증](../development/reading-verification.md)을 참고합니다.

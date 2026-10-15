@@ -53,6 +53,10 @@ enum FolinaTheme {
         static let large: CGFloat = 24
         static let page: CGFloat = 35
         static let section: CGFloat = 56
+
+        static func horizontalPage(width: CGFloat) -> CGFloat {
+            width >= 600 ? page : medium
+        }
     }
 }
 
