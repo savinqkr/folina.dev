@@ -2,7 +2,10 @@ import SwiftUI
 
 struct ContentView: View {
     var body: some View {
-        BookshelfView(diaries: SampleDiaries.bookshelf)
+        NavigationStack {
+            BookshelfView(diaries: SampleDiaries.bookshelf)
+                .toolbar(.hidden, for: .navigationBar)
+        }
     }
 }
 

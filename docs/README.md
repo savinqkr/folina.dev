@@ -45,6 +45,7 @@ Notion IA 링크는 제공받은 주소를 그대로 기록했습니다. 유효�
 | [정책](product/policies.md) | 제품 동작 정책 |
 | [디자인 시스템](design/design-system.md) | 디자인 토큰·컴포넌트 |
 | [화면 명세](design/screen-spec.md) | 화면 상태·인터랙션 |
+| [생성 화면](design/creation-spec.md) | 2차 개발 옵션·미리보기·검증 절차 |
 | [탐색 구조](design/navigation.md) | IA·사용자 흐름·화면 전환 |
 | [아키텍처 개요](architecture/overview.md) | 현재 코드 구조와 실행 제약 |
 | [데이터 모델](architecture/data-model.md) | 확정 데이터 구조·저장 방식 |

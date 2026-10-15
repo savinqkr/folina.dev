@@ -21,7 +21,7 @@ FOLINA/
 └── SampleData/SampleDiaries.swift  # 저장하지 않는 샘플
 ```
 
-화면은 주입받은 목록을 표시합니다. 표지의 제본·색상·장식 디자인 종류를 분리하여 다른 외형을 추가할 수 있게 구성했습니다. 영구 저장 모델·저장소·다른 기능 화면을 미리 만들지 않았습니다.
+책장 화면은 주입받은 목록을 표시합니다. 표지의 제본·색상·장식 디자인 종류를 분리하여 다른 외형을 추가할 수 있게 구성했습니다. 영구 저장 모델·저장소는 없습니다. 2차 개발에서 생성 옵션 화면과 화면 내 초안 모델을 추가했습니다.
 
 폴더는 기존 Xcode의 `PBXFileSystemSynchronizedRootGroup` 아래에 있어 소스 목록을 수동 편집하지 않습니다. 기존 테스트 타깃과 프로젝트 설정을 유지합니다.
 
@@ -50,3 +50,12 @@ FOLINA/
 ## 미결정 사항
 
 목표 아키텍처 패턴, 상태 관리, 저장 방식, 동기화 여부는 확정하지 않았습니다. 원본 요구사항을 확인한 뒤 대안을 검토하고 중요한 결정은 [기술 결정](decisions.md)에 기록합니다.
+
+## 2차 개발 — 생성 옵션 화면
+
+- `ContentView`의 `NavigationStack`에서 책장 → `DiaryCreationView`로 이동합니다. 뒤로 가면 생성 화면의 `@State` 초안은 해제됩니다.
+- `Models/DiaryDraft.swift`의 값 타입에 이름·기록 방식·제본·색상·표지 스타일·속지·방향을 보관합니다. 저장 스키마를 확정하지 않고 향후 저장 계층에 전달할 수 있는 값으로 분리했습니다.
+- `Screens/Creation/DiaryCreationView.swift`가 상태를 소유하고, `DiaryOptionPicker`는 `Binding`으로 각 필드만 수정합니다.
+- `DiaryCreationPreview`는 같은 초안을 읽어 펼친 속지를 그립니다. `DiaryCoverView`는 초안의 표시용 투영을 받아 표지 스타일을 표시합니다.
+- `FolinaHeader`, `MetalBinderRing`, `DiaryCoverTone+Color`는 책장·생성 화면에서 공유합니다. 기존 샘플과 제본 스타일을 유지합니다.
+- 세부 동작·디자인 차이·Mac 검증 절차는 [생성 화면 명세](../design/creation-spec.md)를 참조합니다.

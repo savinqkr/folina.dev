@@ -12,22 +12,25 @@ struct DiaryCoverStyle {
     let binding: DiaryBinding
     let tone: DiaryCoverTone
     let design: DiaryCoverDesign
+    let customColor: DiaryCustomColor?
 
-    init(binding: DiaryBinding, tone: DiaryCoverTone, design: DiaryCoverDesign = .classic) {
+    init(binding: DiaryBinding, tone: DiaryCoverTone, design: DiaryCoverDesign = .classic,
+         customColor: DiaryCustomColor? = nil) {
         self.binding = binding
         self.tone = tone
         self.design = design
+        self.customColor = customColor
     }
 }
 
-enum DiaryBinding {
+enum DiaryBinding: String, Codable, CaseIterable {
     case ringBinder
     case spiral
     case hardcover
     case softcover
 }
 
-enum DiaryCoverTone {
+enum DiaryCoverTone: String, Codable, CaseIterable {
     case sage
     case slateBlue
     case rose
@@ -37,7 +40,7 @@ enum DiaryCoverTone {
     case kraft
 }
 
-enum DiaryCoverDesign {
+enum DiaryCoverDesign: String, Codable {
     case classic
     case leatherWrap
     case botanicalWindow
