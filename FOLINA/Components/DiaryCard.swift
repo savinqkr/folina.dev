@@ -7,7 +7,8 @@ struct DiaryCard: View {
     var body: some View {
         VStack(alignment: .center, spacing: FolinaTheme.Spacing.small) {
             DiaryCoverView(diary: diary)
-                .frame(height: 287, alignment: .bottom)
+                .scaleEffect(diary.orientation == .landscape ? 1.15 : 1)
+                .frame(width: 224, height: 287, alignment: .center)
             Text(diary.title)
                 .font(FolinaTheme.Typography.label)
                 .foregroundStyle(FolinaTheme.Palette.ink)
@@ -19,7 +20,7 @@ struct DiaryCard: View {
                 .fixedSize(horizontal: false, vertical: true)
                 .frame(maxWidth: .infinity)
         }
-        .frame(width: 192)
+        .frame(width: 224)
         .multilineTextAlignment(.center)
         .frame(maxWidth: .infinity, alignment: .leading)
         .accessibilityElement(children: .ignore)
