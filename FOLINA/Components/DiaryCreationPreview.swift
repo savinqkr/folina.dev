@@ -89,30 +89,41 @@ struct DiaryCreationPreview: View {
                                      startPoint: .leading, endPoint: .trailing))
                 .frame(width: 20, height: bookHeight - 4)
 
-            // 책갈피는 종이 아래에 끼우고 아래쪽 꼬리만 드러냅니다.
-            Path { path in
-                path.move(to: CGPoint(x: 0, y: 0))
-                path.addLine(to: CGPoint(x: 9, y: 0))
-                path.addLine(to: CGPoint(x: 9, y: 39))
-                path.addLine(to: CGPoint(x: 4.5, y: 35))
-                path.addLine(to: CGPoint(x: 0, y: 39))
-                path.closeSubpath()
-            }
-            .fill(LinearGradient(colors: [FolinaTheme.Palette.spine, .white.opacity(0.7),
-                                          FolinaTheme.Palette.spine],
-                                 startPoint: .leading, endPoint: .trailing))
-            .frame(width: 9, height: 39)
-            .rotationEffect(.degrees(-8), anchor: .top)
-            .shadow(color: .black.opacity(0.16), radius: 1, x: 1, y: 1)
-            .offset(x: 22, y: bookHeight / 2 - 8)
-
             HStack(spacing: 5) {
                 hardcoverPage(isLeft: true)
                 hardcoverPage(isLeft: false)
             }
             .frame(width: 491, height: bookHeight - 32)
             .offset(y: -5)
+            hardcoverRibbon
         }
+    }
+
+    private var hardcoverRibbon: some View {
+        SatinBookmarkShape()
+            .fill(LinearGradient(stops: [
+                .init(color: FolinaTheme.Palette.spine, location: 0),
+                .init(color: FolinaTheme.Palette.slateBlue, location: 0.3),
+                .init(color: .white.opacity(0.95), location: 0.45),
+                .init(color: FolinaTheme.Palette.slateBlue, location: 0.6),
+                .init(color: FolinaTheme.Palette.spine, location: 1)
+            ], startPoint: .leading, endPoint: .trailing))
+            .overlay {
+                SatinBookmarkShape()
+                    .stroke(.white.opacity(0.45), lineWidth: 0.5)
+            }
+            .overlay {
+                // 아래쪽이 살짝 들린 접힘. 광택 띠와 구분되는 부드러운 가로 음영입니다.
+                LinearGradient(colors: [.clear, .black.opacity(0.2), .white.opacity(0.25), .clear],
+                               startPoint: .top, endPoint: .bottom)
+                    .frame(height: 14)
+                    .offset(y: (bookHeight - 5) / 2 - 29)
+                    .mask(SatinBookmarkShape())
+            }
+            .frame(width: 30, height: bookHeight - 5)
+            .shadow(color: .black.opacity(0.2), radius: 1.8, x: 2, y: 2)
+            .offset(x: 20, y: 15)
+            .accessibilityHidden(true)
     }
 
     private var hardcoverBoard: some View {
@@ -233,5 +244,25 @@ private struct HardcoverPageShape: Shape {
         path.addQuadCurve(to: CGPoint(x: 0, y: h - 5), control: CGPoint(x: 0, y: h))
         path.closeSubpath()
         return isLeft ? path : path.applying(CGAffineTransform(a: -1, b: 0, c: 0, d: 1, tx: w, ty: 0))
+    }
+}
+
+/// 안쪽 책등에서 시작해 종이 위로 흐르는 띠와 V자 꼬리.
+private struct SatinBookmarkShape: Shape {
+    func path(in rect: CGRect) -> Path {
+        let h = rect.height
+        var path = Path()
+        path.move(to: CGPoint(x: 2, y: 0))
+        path.addLine(to: CGPoint(x: 12, y: 0))
+        path.addCurve(to: CGPoint(x: 28, y: h),
+                      control1: CGPoint(x: 10, y: h * 0.35),
+                      control2: CGPoint(x: 12, y: h * 0.72))
+        path.addLine(to: CGPoint(x: 20, y: h - 7))
+        path.addLine(to: CGPoint(x: 15, y: h + 1))
+        path.addCurve(to: CGPoint(x: 2, y: 0),
+                      control1: CGPoint(x: 0, y: h * 0.73),
+                      control2: CGPoint(x: 1, y: h * 0.33))
+        path.closeSubpath()
+        return path
     }
 }
