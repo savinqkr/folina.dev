@@ -51,7 +51,7 @@ struct BookshelfView: View {
                         Text("아직 다이어리가 없어요. 새 다이어리를 만들어 보세요.")
                             .accessibilityIdentifier("bookshelf-empty")
                     }
-                    LazyVGrid(columns: [GridItem(.adaptive(minimum: 224), spacing: 24)],
+                    LazyVGrid(columns: [GridItem(.adaptive(minimum: 232), spacing: 24)],
                               alignment: .leading, spacing: 36) {
                         ForEach(diaries) { diary in
                             if let document = library.documents.first(where: { $0.id.uuidString == diary.id }) {
