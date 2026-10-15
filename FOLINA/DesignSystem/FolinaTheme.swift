@@ -1,4 +1,5 @@
 import SwiftUI
+import CoreText
 
 /// Figma v5 책장 홈(27:15)에서 확인한 색상과 공통 스타일.
 enum FolinaTheme {
@@ -30,7 +31,15 @@ enum FolinaTheme {
         static let brand = Font.title3.weight(.semibold)
         static let body = Font.subheadline
         static let label = Font.subheadline.weight(.semibold)
-        static let cover = Font.headline
+        /// 한글 손글씨를 지원하는 OFL 글꼴. Preview에서도 사용 시 한 번 등록합니다.
+        static let handwrittenCover: Font = {
+            let url = Bundle.main.url(forResource: "NanumPenScript-Regular", withExtension: "ttf")
+                ?? Bundle.main.url(forResource: "NanumPenScript-Regular", withExtension: "ttf", subdirectory: "Fonts")
+            if let url {
+                CTFontManagerRegisterFontsForURL(url as CFURL, .process, nil)
+            }
+            return .custom("NanumPen-Regular", size: 27, relativeTo: .title2)
+        }()
         static let caption = Font.caption
     }
 

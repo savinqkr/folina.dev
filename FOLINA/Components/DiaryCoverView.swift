@@ -181,7 +181,7 @@ struct DiaryCoverView: View {
             VStack(alignment: .leading, spacing: 12) {
                 Text("PERSONAL JOURNAL").font(.system(size: 7, weight: .medium)).tracking(1.1)
                 Text(diary.title)
-                    .font(.system(size: 19, weight: .medium, design: .serif))
+                    .font(FolinaTheme.Typography.handwrittenCover)
                     .fixedSize(horizontal: false, vertical: true)
                 Rectangle().fill(FolinaTheme.Palette.ink.opacity(0.2)).frame(height: 0.6)
                 Text("VOL. 01  /  2026").font(.system(size: 8)).tracking(0.6)
@@ -197,21 +197,6 @@ struct DiaryCoverView: View {
             .shadow(color: .black.opacity(0.13), radius: 1, x: 0.5, y: 1.5)
             .offset(x: 34, y: 62)
         } else {
-            VStack(spacing: 17) {
-                Text(isHardcover ? "D A I L Y   N O T E S" : "M Y   J O U R N A L")
-                    .font(.system(size: 7, weight: .medium))
-                Rectangle().fill(FolinaTheme.Palette.ink.opacity(0.24)).frame(width: 30, height: 0.7)
-                Text(diary.title)
-                    .font(.system(size: 22, weight: .medium, design: .serif))
-                    .multilineTextAlignment(.center)
-                    .fixedSize(horizontal: false, vertical: true)
-                Text("2 0 2 6").font(.system(size: 9, weight: .medium))
-            }
-            .foregroundStyle(FolinaTheme.Palette.ink.opacity(0.7))
-            .shadow(color: .white.opacity(0.6), radius: 0.3, x: 0, y: 1)
-            .frame(width: 130)
-            .offset(x: 32, y: 65)
-
             RoundedRectangle(cornerRadius: 2)
                 .strokeBorder(FolinaTheme.Palette.ink.opacity(0.12), lineWidth: 0.6)
                 .frame(width: 132, height: 224)

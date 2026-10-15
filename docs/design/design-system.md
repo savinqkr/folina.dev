@@ -26,4 +26,10 @@ Figma는 Inter를 사용합니다. 사용자가 추천 선택을 위임하여 iP
 
 사용자의 실물 표현 개선 요청에 따라 `DiaryCoverView` 안에서 종이·천 결·금속·표지 가장자리의 광택과 접촉 그림자를 구성합니다. 광원은 왼쪽 위에서 들어오는 방향으로 통일합니다. 재질 패턴은 좌표로 계산하여 다시 그려도 바뀌지 않습니다.
 
-책등·펀칭 구멍·링·리본·밴드는 장식이며 별도 조작 기능이 없습니다. 인쇄된 제목은 기본 시스템 서체의 serif 변형을 사용하고, 화면의 제목·본문은 기존 시스템 스타일을 유지합니다. Figma 원본과의 변경 근거는 [화면 명세](screen-spec.md#사용자-요청으로-추가한-표지-표현)에 기록합니다.
+책등·펀칭 구멍·링·리본·밴드는 장식이며 별도 조작 기능이 없습니다. 링바인더의 제목은 나눔손글씨 펜을 사용합니다. 나머지 두 표지에는 문구를 표시하지 않으며 화면의 제목·본문은 기존 시스템 스타일을 유지합니다. Figma 원본과의 변경 근거는 [화면 명세](screen-spec.md#사용자-요청으로-추가한-표지-표현)에 기록합니다.
+
+## 한글 손글씨 리소스
+
+사용자의 손글씨 요청에 따라 [나눔손글씨 펜](https://github.com/google/fonts/tree/main/ofl/nanumpenscript)을 `FOLINA/Fonts/NanumPenScript-Regular.ttf`에 포함했습니다. 파일에서 확인한 PostScript 이름은 `NanumPen-Regular`이며, `FolinaTheme.Typography.handwrittenCover`가 CoreText로 한 번 등록합니다. Xcode 기존 동기화 폴더를 통해 앱 리소스로 포함하며 다운로드 없이 동작합니다. 기본 크기 27pt에 `.title2` 기준 글자 크기 조절을 적용합니다.
+
+글꼴은 수정하지 않았고 [SIL Open Font License 원문](../../FOLINA/Fonts/OFL.txt)을 함께 배포합니다. 외부 라이브러리를 추가하지 않았습니다. 실제 앱 번들 포함·손글씨 렌더링은 Mac에서 확인해야 합니다.
