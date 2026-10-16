@@ -120,51 +120,108 @@ private struct EditablePageObject: View {
 
     var body: some View {
         PageObjectVisual(object: object, diaryID: diaryID)
-            .overlay {
-                if selected { Rectangle().stroke(.blue, style: StrokeStyle(lineWidth: 2, dash: [8, 4])) }
-            }
+            .overlay { selectionBorder }
             .contentShape(Rectangle())
             .onTapGesture(perform: select)
-            .gesture(DragGesture(coordinateSpace: .named("decoration-page"))
-                .onChanged { value in
-                    select()
-                    if dragOrigin == nil { dragOrigin = CGPoint(x: object.x, y: object.y) }
-                    if let origin = dragOrigin { update { $0.x = origin.x + value.translation.width; $0.y = origin.y + value.translation.height } }
-                }.onEnded { _ in dragOrigin = nil })
-            .simultaneousGesture(MagnifyGesture().onChanged { value in
-                select()
-                if scaleOrigin == nil { scaleOrigin = CGSize(width: object.width, height: object.height) }
-                if let origin = scaleOrigin {
-                    let factor = max(24 / min(origin.width, origin.height), value.magnification)
-                    update { $0.width = origin.width * factor; $0.height = origin.height * factor }
-                }
-            }.onEnded { _ in scaleOrigin = nil })
-            .simultaneousGesture(RotateGesture().onChanged { value in
-                select()
-                if rotateOrigin == nil { rotateOrigin = object.rotation }
-                if let origin = rotateOrigin { update { $0.rotation = origin + value.rotation.degrees } }
-            }.onEnded { _ in rotateOrigin = nil })
-            .overlay(alignment: .bottomTrailing) {
-                if selected {
-                    Circle().fill(.blue).frame(width: 24, height: 24)
-                        .accessibilityLabel("객체 크기 조절")
-                        .gesture(DragGesture(coordinateSpace: .named("decoration-page")).onChanged { value in
-                            if handleOrigin == nil { handleOrigin = CGSize(width: object.width, height: object.height) }
-                            if let origin = handleOrigin {
-                                update {
-                                    let radians = object.rotation * .pi / 180
-                                    let dx = cos(radians) * value.translation.width + sin(radians) * value.translation.height
-                                    let dy = -sin(radians) * value.translation.width + cos(radians) * value.translation.height
-                                    let width = max(24, origin.width + dx)
-                                    $0.width = width
-                                    $0.height = object.kind == .photo ? origin.height * width / origin.width : max(24, origin.height + dy)
-                                }
-                            }
-                        }.onEnded { _ in handleOrigin = nil })
-                }
-            }
+            .gesture(moveGesture)
+            .simultaneousGesture(scaleGesture)
+            .simultaneousGesture(rotationGesture)
+            .overlay(alignment: .bottomTrailing) { resizeHandle }
             .rotationEffect(.degrees(object.rotation))
             .accessibilityLabel(object.kind == .text ? "텍스트: \(object.text)" : "사진")
+    }
+
+    @ViewBuilder private var selectionBorder: some View {
+        if selected {
+            Rectangle().stroke(Color.blue, style: StrokeStyle(lineWidth: 2, dash: [8, 4]))
+        }
+    }
+
+    @ViewBuilder private var resizeHandle: some View {
+        if selected {
+            Circle().fill(Color.blue).frame(width: 24, height: 24)
+                .accessibilityLabel("객체 크기 조절")
+                .gesture(resizeGesture)
+        }
+    }
+
+    private var moveGesture: some Gesture {
+        DragGesture(coordinateSpace: .named("decoration-page"))
+            .onChanged(moveObject)
+            .onEnded { _ in dragOrigin = nil }
+    }
+
+    private var scaleGesture: some Gesture {
+        MagnifyGesture()
+            .onChanged(scaleObject)
+            .onEnded { _ in scaleOrigin = nil }
+    }
+
+    private var rotationGesture: some Gesture {
+        RotateGesture()
+            .onChanged(rotateObject)
+            .onEnded { _ in rotateOrigin = nil }
+    }
+
+    private var resizeGesture: some Gesture {
+        DragGesture(coordinateSpace: .named("decoration-page"))
+            .onChanged(resizeObject)
+            .onEnded { _ in handleOrigin = nil }
+    }
+
+    private func moveObject(_ value: DragGesture.Value) {
+        select()
+        if dragOrigin == nil { dragOrigin = CGPoint(x: object.x, y: object.y) }
+        guard let origin = dragOrigin else { return }
+        let x: Double = Double(origin.x + value.translation.width)
+        let y: Double = Double(origin.y + value.translation.height)
+        update { object in
+            object.x = x
+            object.y = y
+        }
+    }
+
+    private func scaleObject(_ value: MagnifyGesture.Value) {
+        select()
+        if scaleOrigin == nil { scaleOrigin = CGSize(width: object.width, height: object.height) }
+        guard let origin = scaleOrigin else { return }
+        let minimumFactor: Double = 24 / min(Double(origin.width), Double(origin.height))
+        let factor: Double = max(minimumFactor, Double(value.magnification))
+        let width: Double = Double(origin.width) * factor
+        let height: Double = Double(origin.height) * factor
+        update { object in
+            object.width = width
+            object.height = height
+        }
+    }
+
+    private func rotateObject(_ value: RotateGesture.Value) {
+        select()
+        if rotateOrigin == nil { rotateOrigin = object.rotation }
+        guard let origin = rotateOrigin else { return }
+        let degrees: Double = origin + value.rotation.degrees
+        update { $0.rotation = degrees }
+    }
+
+    private func resizeObject(_ value: DragGesture.Value) {
+        if handleOrigin == nil { handleOrigin = CGSize(width: object.width, height: object.height) }
+        guard let origin = handleOrigin else { return }
+        let radians: Double = object.rotation * Double.pi / 180
+        let translationX: Double = Double(value.translation.width)
+        let translationY: Double = Double(value.translation.height)
+        let dx: Double = cos(radians) * translationX + sin(radians) * translationY
+        let dy: Double = -sin(radians) * translationX + cos(radians) * translationY
+        let width: Double = max(24, Double(origin.width) + dx)
+        let height: Double
+        if object.kind == .photo {
+            height = Double(origin.height) * width / Double(origin.width)
+        } else {
+            height = max(24, Double(origin.height) + dy)
+        }
+        update { object in
+            object.width = width
+            object.height = height
+        }
     }
 }
 
