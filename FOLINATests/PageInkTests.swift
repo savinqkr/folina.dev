@@ -31,7 +31,7 @@ struct PageInkStorageTests {
         #expect(try PKDrawing(data: loaded.payload).strokes.count == 1)
         #expect(try await reopened.load(page: second) == nil)
         #expect(try await reopened.load(page: other) == nil)
-        try await reopened.save(PageInk(page: first, payload: PKDrawing().dataRepresentation()))
+        try await reopened.save(PageInk(page: first, payload: PKDrawing().dataRepresentation()), replacing: loaded)
         let erased = try #require(try await store.load(page: first))
         #expect(try PKDrawing(data: erased.payload).strokes.isEmpty)
     }
@@ -146,6 +146,10 @@ private actor InkTestStorage: PageInkStorage {
     func load(page: DiaryPage) throws -> PageInk? {
         if failure { throw Failure.simulated }
         return ink
+    }
+    func save(_ ink: PageInk, replacing expected: PageInk?) throws {
+        guard self.ink == expected else { throw DiaryStorageError.conflict }
+        try save(ink)
     }
     func save(_ ink: PageInk) throws {
         if failure { throw Failure.simulated }

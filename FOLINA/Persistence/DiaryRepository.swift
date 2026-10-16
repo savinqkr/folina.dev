@@ -19,6 +19,7 @@ final class StoredDiary {
 protocol DiaryRepository {
     func load() async throws -> [DiaryDocument]
     func insert(_ document: DiaryDocument) async throws
+    func updatePages(expected: DiaryDocument, mutation: DiaryPageMutation) async throws -> DiaryDocument
     func setBookmark(diaryID: UUID, pageID: UUID, isBookmarked: Bool) async throws -> DiaryDocument
 }
 
@@ -40,26 +41,26 @@ final class SwiftDataDiaryRepository: DiaryRepository {
     }
 
     func load() async throws -> [DiaryDocument] {
-        try context.fetch(FetchDescriptor<StoredDiary>()).map { row in
+        let context = ModelContext(container)
+        return try context.fetch(FetchDescriptor<StoredDiary>()).map { row in
             guard row.formatVersion == 1 else { throw DiaryStorageError.unsupportedVersion }
             let document: DiaryDocument
             do { document = try JSONDecoder().decode(DiaryDocument.self, from: row.documentData) }
             catch { throw DiaryStorageError.damagedDocument }
-            guard document.id == row.id,
-                  !document.title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty,
-                  Set(document.pages.map(\.id)).count == document.pages.count,
-                  document.bookmarks.isSubset(of: Set(document.pages.map(\.id))),
-                  document.pages.allSatisfy({ $0.diaryID == row.id && $0.widthMM > 0 && $0.heightMM > 0 })
-            else { throw DiaryStorageError.damagedDocument }
+            guard document.id == row.id else { throw DiaryStorageError.damagedDocument }
+            try document.validate()
             return document
         }.sorted { $0.createdAt > $1.createdAt }
     }
 
     func setBookmark(diaryID: UUID, pageID: UUID, isBookmarked: Bool) async throws -> DiaryDocument {
+        let context = ModelContext(container)
+        context.autosaveEnabled = false
         let request = FetchDescriptor<StoredDiary>(predicate: #Predicate { $0.id == diaryID })
         guard let row = try context.fetch(request).first else { throw DiaryStorageError.unavailable }
         guard row.formatVersion == 1 else { throw DiaryStorageError.unsupportedVersion }
         var document = try JSONDecoder().decode(DiaryDocument.self, from: row.documentData)
+        try document.validate()
         guard document.id == diaryID, document.pages.contains(where: { $0.id == pageID }) else {
             throw DiaryStorageError.damagedDocument
         }
@@ -72,6 +73,27 @@ final class SwiftDataDiaryRepository: DiaryRepository {
             return document
         } catch {
             context.rollback()
+            throw error
+        }
+    }
+
+    func updatePages(expected: DiaryDocument, mutation: DiaryPageMutation) async throws -> DiaryDocument {
+        // 새 context에서 확정 값을 읽어 오래된 화면의 전체 문서 덮어쓰기를 막습니다.
+        let transaction = ModelContext(container)
+        transaction.autosaveEnabled = false
+        let id = expected.id
+        let request = FetchDescriptor<StoredDiary>(predicate: #Predicate { $0.id == id })
+        guard let row = try transaction.fetch(request).first else { throw DiaryStorageError.unavailable }
+        guard row.formatVersion == 1 else { throw DiaryStorageError.unsupportedVersion }
+        var latest = try JSONDecoder().decode(DiaryDocument.self, from: row.documentData)
+        guard latest == expected else { throw DiaryStorageError.conflict }
+        try latest.apply(mutation)
+        do {
+            row.documentData = try JSONEncoder().encode(latest)
+            try transaction.save()
+            return latest
+        } catch {
+            transaction.rollback()
             throw error
         }
     }

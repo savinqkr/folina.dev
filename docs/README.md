@@ -78,3 +78,7 @@ Figma v5 읽기 27:125를 2026-10-16에 열람했습니다. 원본 에셋 다운
 ## 5차 개발 — 기본 필기 편집기
 
 [편집 화면](design/editor-spec.md), [필기 저장·좌표·엔진 구조](architecture/ink-editor.md), [검증 절차](development/editor-verification.md)를 참고합니다. Notion 편집/저장/Pencil 정책과 Figma 27:168·27:257 스크린샷을 2026-10-16에 열람했습니다.
+
+## 6차 개발 — 페이지 관리와 텍스트·사진
+
+[저장·휴지통·충돌 보호 구조](architecture/page-decoration.md), [화면·입력 명세](design/page-decoration-spec.md), [검증 절차](development/page-decoration-verification.md)를 참고합니다. 이번 Notion·Figma 재접근은 403으로 실패했으며 사용자 요청과 기존 확인 기록을 구분하여 반영했습니다.

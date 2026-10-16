@@ -74,10 +74,19 @@ struct DiaryDetailView: View {
         .accessibilityIdentifier("diary-detail")
         .sheet(item: $panel) { selection in
             NavigationStack {
-                ReadingPageList(document: current, bookmarksOnly: selection == .bookmarks,
-                                selectedID: position.pageID) { id in
-                    position.select(id, in: current.pages)
-                    panel = nil
+                Group {
+                    if selection == .manage {
+                        DiaryPageManagementView(diaryID: current.id) { id in
+                            position.select(id, in: current.pages)
+                            panel = nil
+                        }
+                    } else {
+                        ReadingPageList(document: current, bookmarksOnly: selection == .bookmarks,
+                                        selectedID: position.pageID) { id in
+                            position.select(id, in: current.pages)
+                            panel = nil
+                        }
+                    }
                 }
                 .toolbar { ToolbarItem(placement: .confirmationAction) { Button("닫기") { panel = nil } } }
             }
@@ -86,6 +95,10 @@ struct DiaryDetailView: View {
             get: { errorMessage != nil }, set: { if !$0 { errorMessage = nil } })) {
                 Button("확인", role: .cancel) { errorMessage = nil }
             } message: { Text(errorMessage ?? "") }
+        .onChange(of: current.pages.map(\.id)) { _, ids in
+            if let selected = position.pageID, ids.contains(selected) { return }
+            if let first = ids.first { position.select(first, in: current.pages) }
+        }
         .fullScreenCover(item: $editingPage, onDismiss: { inkRefresh += 1 }) { page in
             DiaryEditorView(title: current.title, page: page)
         }
@@ -109,6 +122,8 @@ struct DiaryDetailView: View {
                     }
                     .disabled(isTurning || position.destination(in: current.pages, spread: spread, forward: false) == nil)
                     .accessibilityIdentifier("reading-previous")
+                    Button("페이지 관리") { panel = .manage }
+                        .accessibilityIdentifier("reading-manage-pages")
                     Button("목차") { panel = .contents }
                         .accessibilityIdentifier("reading-contents")
                     Button("책갈피 목록") { panel = .bookmarks }
@@ -163,7 +178,7 @@ struct DiaryDetailView: View {
 }
 
 private enum ReadingPanel: String, Identifiable {
-    case contents, bookmarks
+    case contents, bookmarks, manage
     var id: String { rawValue }
 }
 
