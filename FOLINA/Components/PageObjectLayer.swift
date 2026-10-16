@@ -1,11 +1,13 @@
 import SwiftUI
 import ImageIO
+import UniformTypeIdentifiers
 
 /// 원본 사진은 보존하고 표시용 디코딩 크기만 제한합니다.
 enum PhotoPreview {
     static func decode(_ data: Data) -> UIImage? {
-        guard let source = CGImageSourceCreateWithData(data as CFData, nil),
-              let image = CGImageSourceCreateThumbnailAtIndex(source, 0, [
+        guard let source = CGImageSourceCreateWithData(data as CFData, nil) else { return nil }
+        if let type = CGImageSourceGetType(source), (type as String) == UTType.gif.identifier { return nil }
+        guard let image = CGImageSourceCreateThumbnailAtIndex(source, 0, [
                 kCGImageSourceCreateThumbnailFromImageAlways: true,
                 kCGImageSourceCreateThumbnailWithTransform: true,
                 kCGImageSourceThumbnailMaxPixelSize: 2048
