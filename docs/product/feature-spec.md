@@ -27,3 +27,7 @@ Notion [기능 명세 원본](https://app.notion.com/p/3f91e7915bce81f89817c4823
 실제 저장 다이어리 열기, 제본별 외형, 저장 페이지 표시, 창 크기별 1/2페이지, 경계 이동·목차·UUID 책갈피 저장을 추가했습니다.
 
 상세 내용은 [읽기 명세](../design/reading-spec.md)와 [읽기 검증](../development/reading-verification.md)을 참고합니다.
+
+## 5차 개발
+
+기본 펜·형광펜·벡터 지우개·세션 실행 취소/다시 실행·페이지별 원본 저장·읽기 연결을 추가합니다. [편집 명세](../design/editor-spec.md)와 [검증](../development/editor-verification.md)을 참고합니다.

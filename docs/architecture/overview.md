@@ -70,3 +70,7 @@ SwiftData 컨테이너와 전용 context는 저장 어댑터가 유지합니다.
 DiaryDetailView를 읽기 화면으로 확장했습니다. Models/DiaryReadingPosition.swift는 UUID 선택·펼침·경계 계산, Components/DiaryReadingBook.swift는 종이·표지·제본 외형을 담당합니다. DiaryRepository/DiaryLibrary에 책갈피 트랜잭션을 추가했습니다. 기존 Xcode 동기화 폴더와 테스트 타깃을 그대로 사용합니다.
 
 상세 내용은 [읽기 명세](../design/reading-spec.md)와 [읽기 검증](../development/reading-verification.md)을 참고합니다.
+
+## 5차 개발 — 편집기
+
+읽기에서 선택 페이지를 전체 화면 DiaryEditorView로 전달합니다. PencilKit/SwiftUI 어댑터, 세션 상태와 actor 파일 저장을 분리합니다. [필기 구조](ink-editor.md)를 참고합니다. 기존 Xcode 설정/타깃은 유지합니다.
