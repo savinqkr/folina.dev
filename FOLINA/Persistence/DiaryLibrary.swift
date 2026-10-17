@@ -40,6 +40,12 @@ final class DiaryLibrary {
         }
     }
 
+    func updatePages(expected: DiaryDocument, mutation: DiaryPageMutation) async throws {
+        guard isReady, let repository else { throw DiaryStorageError.unavailable }
+        let saved = try await repository.updatePages(expected: expected, mutation: mutation)
+        if let index = documents.firstIndex(where: { $0.id == saved.id }) { documents[index] = saved }
+    }
+
     func insert(_ document: DiaryDocument) async throws {
         guard isReady, let repository else { throw DiaryStorageError.unavailable }
         try await repository.insert(document)

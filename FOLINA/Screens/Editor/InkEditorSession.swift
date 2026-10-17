@@ -10,9 +10,13 @@ final class InkEditorSession {
     private(set) var status = "불러오는 중…"
     private(set) var errorMessage: String?
     private(set) var canUndo = false
+    private(set) var hasConflict = false
+    private var protectedRevision: Int?
+    var currentIsProtected: Bool { hasConflict && protectedRevision == revision }
     private(set) var canRedo = false
     private var revision = 0
     private var savedRevision = 0
+    private var savedInk: PageInk?
     private var pending: Task<Void, Never>?
     private var writes: Task<Bool, Never>?
     private var writingRevision: Int?
@@ -37,6 +41,7 @@ final class InkEditorSession {
         do {
             if let ink = try await storage.load(page: page) {
                 canvas.drawing = try PKDrawing(data: ink.payload)
+                savedInk = ink
                 coordinateWidth = ink.width
                 coordinateHeight = ink.height
             }
@@ -82,15 +87,18 @@ final class InkEditorSession {
         let write = Task { @MainActor [weak self] () -> Bool in
             _ = await previous?.value
             do {
-                try await storage.save(ink)
-                guard let self else { return true }
+                guard let self else { return false }
+                try await storage.save(ink, replacing: self.savedInk)
+                self.savedInk = ink
                 if self.writingRevision == target { self.writingRevision = nil }
                 self.savedRevision = max(self.savedRevision, target)
-                if self.revision == target { self.status = "저장됨"; self.errorMessage = nil }
+                if self.revision == target { self.status = "저장됨"; self.errorMessage = nil; self.hasConflict = false }
                 return true
             } catch {
                 if self?.writingRevision == target { self?.writingRevision = nil }
-                self?.status = "저장 실패"
+                self?.hasConflict = (error as? DiaryStorageError) == .conflict
+                if self?.hasConflict == true { self?.protectedRevision = target }
+                self?.status = self?.hasConflict == true ? "필기 충돌 사본 보관됨" : "저장 실패"
                 self?.errorMessage = "필기를 저장하지 못했어요. 편집 화면을 유지하고 다시 저장해 주세요.\n\(error.localizedDescription)"
                 return false
             }

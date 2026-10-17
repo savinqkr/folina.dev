@@ -237,6 +237,14 @@ private final class TestDiaryRepository: DiaryRepository {
         return documents[index]
     }
 
+    func updatePages(expected: DiaryDocument, mutation: DiaryPageMutation) async throws -> DiaryDocument {
+        if failSave { throw Failure.simulated }
+        guard let index = documents.firstIndex(where: { $0.id == expected.id }), documents[index] == expected
+        else { throw DiaryStorageError.conflict }
+        try documents[index].apply(mutation)
+        return documents[index]
+    }
+
     func insert(_ document: DiaryDocument) async throws {
         insertCount += 1
         await duringInsert?()

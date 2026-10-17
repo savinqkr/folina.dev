@@ -74,3 +74,7 @@ DiaryDetailView를 읽기 화면으로 확장했습니다. Models/DiaryReadingPo
 ## 5차 개발 — 편집기
 
 읽기에서 선택 페이지를 전체 화면 DiaryEditorView로 전달합니다. PencilKit/SwiftUI 어댑터, 세션 상태와 actor 파일 저장을 분리합니다. [필기 구조](ink-editor.md)를 참고합니다. 기존 Xcode 설정/타깃은 유지합니다.
+
+## 6차 구조 추가
+
+PageMutation/휴지통은 기존 DiaryDocument JSON과 SwiftData 저장을 확장합니다. PageDecoration·PageObject 및 immutable 사진 파일, 공유 객체 렌더러, 보호 사본 복구는 [6차 아키텍처](page-decoration.md)를 참고합니다. 기존 프로젝트와 최소 OS·기기 설정은 유지합니다.

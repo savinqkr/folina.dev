@@ -20,6 +20,7 @@ struct DiaryReadingPaper: View {
                         .scaleEffect(geometry.size.width / width, anchor: .topLeading)
                 }
                 PageInkOverlay(page: page, refresh: inkRefresh)
+                PageDecorationOverlay(page: page, refresh: inkRefresh)
                 VStack {
                     HStack {
                         if let date = page.date { Text(date.readingLabel) }

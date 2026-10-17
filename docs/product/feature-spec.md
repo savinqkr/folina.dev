@@ -31,3 +31,7 @@ Notion [기능 명세 원본](https://app.notion.com/p/3f91e7915bce81f89817c4823
 ## 5차 개발
 
 기본 펜·형광펜·벡터 지우개·세션 실행 취소/다시 실행·페이지별 원본 저장·읽기 연결을 추가합니다. [편집 명세](../design/editor-spec.md)와 [검증](../development/editor-verification.md)을 참고합니다.
+
+## 6차 요청 반영
+
+페이지 추가·독립 복제·순서 변경·복원 가능한 삭제, 텍스트·사진 객체 편집과 로컬 저장을 추가했습니다. 수용 범위와 원본 미확인 사항은 [화면 명세](../design/page-decoration-spec.md), 저장 경계는 [아키텍처](../architecture/page-decoration.md), 확인 절차는 [검증](../development/page-decoration-verification.md)에 정의합니다.
