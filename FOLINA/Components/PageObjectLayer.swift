@@ -95,6 +95,11 @@ struct PageObjectLayer: View {
             ForEach(content.objects.sorted { $0.zIndex < $1.zIndex }) { object in
                 EditablePageObject(object: object, diaryID: content.diaryID,
                     selected: interactive && session?.selectedID == object.id,
+                    editingText: interactive && session?.editingTextID == object.id,
+                    beginTextEditing: { session?.editingTextID = object.id },
+                    endTextEditing: {
+                        if session?.editingTextID == object.id { session?.editingTextID = nil }
+                    },
                     select: { session?.selectedID = object.id },
                     update: { change in session?.update(object.id, change) })
                     .position(x: object.x, y: object.y)
@@ -111,6 +116,9 @@ private struct EditablePageObject: View {
     let object: PageObject
     let diaryID: UUID
     let selected: Bool
+    let editingText: Bool
+    let beginTextEditing: () -> Void
+    let endTextEditing: () -> Void
     let select: () -> Void
     let update: ((inout PageObject) -> Void) -> Void
     @State private var dragOrigin: CGPoint?
@@ -119,16 +127,29 @@ private struct EditablePageObject: View {
     @State private var handleOrigin: CGSize?
 
     var body: some View {
-        PageObjectVisual(object: object, diaryID: diaryID)
-            .overlay { selectionBorder }
+        objectContent
+            .overlay { selectionBorder.allowsHitTesting(false) }
             .contentShape(Rectangle())
-            .onTapGesture(perform: select)
-            .gesture(moveGesture)
-            .simultaneousGesture(scaleGesture)
-            .simultaneousGesture(rotationGesture)
             .overlay(alignment: .bottomTrailing) { resizeHandle }
             .rotationEffect(.degrees(object.rotation))
             .accessibilityLabel(object.kind == .text ? "텍스트: \(object.text)" : "사진")
+    }
+
+    @ViewBuilder private var objectContent: some View {
+        if object.kind == .text && editingText {
+            InlinePageTextEditor(object: object, update: update, endEditing: endTextEditing)
+                .frame(width: object.width, height: object.height)
+                .clipped()
+        } else {
+            PageObjectVisual(object: object, diaryID: diaryID)
+                .onTapGesture {
+                    select()
+                    if object.kind == .text { beginTextEditing() }
+                }
+                .gesture(moveGesture)
+                .simultaneousGesture(scaleGesture)
+                .simultaneousGesture(rotationGesture)
+        }
     }
 
     @ViewBuilder private var selectionBorder: some View {
@@ -139,9 +160,13 @@ private struct EditablePageObject: View {
 
     @ViewBuilder private var resizeHandle: some View {
         if selected {
-            Circle().fill(Color.blue).frame(width: 24, height: 24)
+            Circle().fill(Color.blue).frame(width: 12, height: 12)
+                .frame(width: 44, height: 44)
+                .contentShape(Rectangle())
                 .accessibilityLabel("객체 크기 조절")
                 .gesture(resizeGesture)
+                .alignmentGuide(.trailing) { $0[HorizontalAlignment.center] }
+                .alignmentGuide(.bottom) { $0[VerticalAlignment.center] }
         }
     }
 

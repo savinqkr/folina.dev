@@ -178,8 +178,8 @@ struct DiaryEditorView: View {
         HStack(spacing: 4) {
             Button {
                 selection = .select
+                showingObjectSettings = false
                 objects.addText()
-                showingObjectSettings = true
             } label: { Image(systemName: "textformat") }
                 .buttonStyle(EditorToolButtonStyle()).accessibilityLabel("텍스트 추가").help("텍스트 추가")
             PhotosPicker(selection: $photoItem, matching: .images, photoLibrary: .shared()) {

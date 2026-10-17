@@ -11,7 +11,11 @@ final class DecorationEditorSession {
     private(set) var errorMessage: String?
     private(set) var hasConflict = false
     private(set) var importing = false
-    var selectedID: UUID?
+    var selectedID: UUID? {
+        didSet { if selectedID != oldValue { editingTextID = nil } }
+    }
+    /// 키보드 편집 상태는 저장하지 않습니다.
+    var editingTextID: UUID?
     private var saved: PageDecoration?
     private var revision = 0
     private var savedRevision = 0
@@ -46,11 +50,12 @@ final class DecorationEditorSession {
 
     func addText() {
         guard ready else { return }
-        let object = PageObject(pageID: page.id, kind: .text, text: "텍스트를 입력하세요",
+        let object = PageObject(pageID: page.id, kind: .text, text: "",
                                 x: content.width / 2, y: content.height / 2,
                                 zIndex: content.objects.count)
         content.objects.append(object)
         selectedID = object.id
+        editingTextID = object.id
         changed()
     }
 
